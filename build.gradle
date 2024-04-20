@@ -1,0 +1,340 @@
+plugins {
+	id 'java'
+	id 'maven-publish'
+	id 'java-gradle-plugin'
+	id 'idea'
+	id 'eclipse'
+	id 'groovy'
+	alias(libs.plugins.kotlin) apply false // Delay this so we can perform magic 🪄 first.
+	alias(libs.plugins.spotless)
+	alias(libs.plugins.retry)
+}
+
+/**
+ * Haha this is fun :) The Kotlin gradle plugin triggers deprecation warnings for custom configurations (https://youtrack.jetbrains.com/issue/KT-60879)
+ * We need to make DefaultConfiguration.isSpecialCaseOfChangingUsage think that our configurstion is a special case and not deprecated.
+ * We do this by setting DefaultConfiguration.roleAtCreation to LEGACY, thus isInLegacyRole will now return true.
+ *
+ * Yeah I know we can just ignore the deprecation warning, but doing so wouldn't alert us to issues when testing against pre-release Gradle versions. Also this is more fun :)
+ */
+def brokenConfigurations = [
+	"commonDecompilerRuntimeClasspath",
+	"fernflowerRuntimeClasspath",
+	"cfrRuntimeClasspath",
+	"vineflowerRuntimeClasspath"
+]
+
+configurations.configureEach {
+	if (brokenConfigurations.contains(it.name)) {
+		// For some reason Gradle stops us from using Groovy magic to do this, so lets do it the boring way.
+		def field = org.gradle.api.internal.artifacts.configurations.DefaultConfiguration.class.getDeclaredField("roleAtCreation")
+		field.setAccessible(true)
+		field.set(it, ConfigurationRoles.LEGACY)
+	}
+}
+
+// Ensure we apply the Kotlin plugin after, to allow for the above configuration to take place first
+apply plugin: libs.plugins.kotlin.get().pluginId
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.encoding = "UTF-8"
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+	kotlinOptions {
+		jvmTarget = "17"
+	}
+}
+
+group = 'com.bookkeepersmc'
+def baseVersion = '1.0'
+
+def ENV = System.getenv()
+if (ENV.BUILD_NUMBER) {
+	version = baseVersion + '.' + ENV.BUILD_NUMBER
+} else {
+	version = baseVersion + '.local'
+}
+
+// We must build against the version of Kotlin Gradle ships with.
+def kotlinVersion = KotlinDslVersion.current().getKotlinVersion()
+if (libs.versions.kotlin.get() != kotlinVersion) {
+	throw new IllegalStateException("Requires Kotlin version: ${kotlinVersion}")
+}
+
+repositories {
+	maven {
+		name = 'Fabric'
+		url = 'https://maven.fabricmc.net/'
+	}
+	mavenCentral()
+}
+
+configurations {
+	bootstrap {
+		transitive false
+	}
+	compileClasspath.extendsFrom bootstrap
+	runtimeClasspath.extendsFrom bootstrap
+	testRuntimeClasspath.extendsFrom bootstrap
+}
+
+configurations.all {
+	resolutionStrategy {
+		failOnNonReproducibleResolution()
+	}
+}
+
+sourceSets {
+	commonDecompiler {
+		java {
+			srcDir("src/decompilers/common")
+		}
+	}
+	fernflower {
+		java {
+			srcDir("src/decompilers/fernflower")
+		}
+	}
+	cfr {
+		java {
+			srcDir("src/decompilers/cfr")
+		}
+	}
+	vineflower {
+		java {
+			srcDir("src/decompilers/vineflower")
+		}
+	}
+}
+
+dependencies {
+	implementation gradleApi()
+
+	bootstrap project(":bootstrap")
+
+	// libraries
+	implementation libs.commons.io
+	implementation libs.gson
+	implementation libs.guava
+	implementation libs.bundles.asm
+
+	// game handling utils
+	implementation (libs.fabric.stitch) {
+		exclude module: 'enigma'
+	}
+
+	// tinyfile management
+	implementation libs.fabric.tiny.remapper
+	implementation libs.fabric.access.widener
+	implementation libs.fabric.mapping.io
+	implementation (libs.fabric.lorenz.tiny) {
+		transitive = false
+	}
+
+	implementation libs.fabric.loom.nativelib
+
+	// decompilers
+	fernflowerCompileOnly runtimeLibs.fernflower
+	fernflowerCompileOnly libs.fabric.mapping.io
+
+	cfrCompileOnly runtimeLibs.cfr
+	cfrCompileOnly libs.fabric.mapping.io
+
+	vineflowerCompileOnly runtimeLibs.vineflower
+	vineflowerCompileOnly libs.fabric.mapping.io
+
+	fernflowerApi sourceSets.commonDecompiler.output
+	cfrApi sourceSets.commonDecompiler.output
+	vineflowerApi sourceSets.commonDecompiler.output
+
+	implementation sourceSets.commonDecompiler.output
+	implementation sourceSets.fernflower.output
+	implementation sourceSets.cfr.output
+	implementation sourceSets.vineflower.output
+
+	// source code remapping
+	implementation libs.fabric.mercury
+
+	// Kotlin
+	implementation(libs.kotlin.metadata) {
+		transitive = false
+	}
+
+	// Kapt integration
+	compileOnly libs.kotlin.gradle.plugin
+
+	compileOnly runtimeLibs.jetbrains.annotations
+}
+
+jar {
+	manifest {
+		attributes 'Implementation-Version': project.version
+	}
+
+	from configurations.bootstrap.collect { it.isDirectory() ? it : zipTree(it) }
+	from sourceSets.commonDecompiler.output.classesDirs
+	from sourceSets.cfr.output.classesDirs
+	from sourceSets.fernflower.output.classesDirs
+	from sourceSets.vineflower.output.classesDirs
+}
+
+base {
+	archivesName = project.name
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 17
+}
+
+java {
+	withSourcesJar()
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
+}
+
+spotless {
+	lineEndings = com.diffplug.spotless.LineEnding.UNIX
+
+	java {
+		licenseHeaderFile(rootProject.file("HEADER")).yearSeparator("-")
+		targetExclude("**/loom/util/DownloadUtil.java")
+	}
+
+	groovy {
+		importOrder('java', 'javax', '', 'com.bookkeepersmc', '\\#')
+		licenseHeaderFile(rootProject.file("HEADER")).yearSeparator("-")
+		greclipse()
+	}
+
+	groovyGradle {
+		target 'src/**/*.gradle', '*.gradle'
+		greclipse()
+	}
+
+	kotlin {
+		licenseHeaderFile(rootProject.file("HEADER")).yearSeparator("-")
+		targetExclude("**/build.gradle.kts")
+		ktlint()
+	}
+}
+
+
+
+gradlePlugin {
+	plugins {
+		notebookLoom {
+			id = 'notebook-loom'
+			implementationClass = 'com.bookkeepersmc.loom.bootstrap.LoomGradlePluginBootstrap'
+		}
+	}
+}
+
+
+
+
+import org.gradle.api.internal.artifacts.configurations.ConfigurationRoles
+import org.gradle.launcher.cli.KotlinDslVersion
+import org.gradle.util.GradleVersion
+import org.w3c.dom.Document
+import org.w3c.dom.Element
+import org.w3c.dom.Node
+
+publishing {
+	publications {
+		create("snapshot", MavenPublication) { publication ->
+			groupId project.group
+			artifactId project.base.archivesName.get()
+			version baseVersion + '-SNAPSHOT'
+
+			from components.java
+		}
+
+		create("snapshotPlugin", MavenPublication) { publication ->
+			groupId 'notebook-loom'
+			artifactId 'notebook-loom.gradle.plugin'
+			version baseVersion + '-SNAPSHOT'
+
+			pom.withXml({
+				Element root = asElement()
+				Document document = root.getOwnerDocument()
+				Node dependencies = root.appendChild(document.createElement('dependencies'))
+				Node dependency = dependencies.appendChild(document.createElement('dependency'))
+				Node groupId = dependency.appendChild(document.createElement('groupId'))
+				groupId.setTextContent('com.bookkeepersmc')
+				Node artifactId = dependency.appendChild(document.createElement('artifactId'))
+				artifactId.setTextContent('notebook-loom')
+				Node version = dependency.appendChild(document.createElement('version'))
+				version.setTextContent(baseVersion + '-SNAPSHOT')
+			})
+		}
+	}
+	repositories {
+		maven {
+			if (ENV.MAVEN_URL) {
+				url ENV.MAVEN_URL
+			}
+		}
+	}
+}
+
+// Need to tweak this file to pretend we are compatible with j8 so the bootstrap will run.
+tasks.withType(GenerateModuleMetadata) {
+	doLast {
+		def file = outputFile.get().asFile
+
+		def metadata = new groovy.json.JsonSlurper().parseText(file.text)
+
+		metadata.variants.each {
+			it.attributes["org.gradle.jvm.version"] = 8
+		}
+
+		file.text = groovy.json.JsonOutput.toJson(metadata)
+	}
+}
+
+
+tasks.named('wrapper') {
+	distributionType = Wrapper.DistributionType.ALL
+}
+
+/**
+ * Run this task to download the gradle sources next to the api jar, you may need to manually attach the sources jar
+ */
+task downloadGradleSources() {
+	doLast {
+		// Awful hack to find the gradle api location
+		def gradleApiFile = project.configurations.detachedConfiguration(dependencies.gradleApi()).files.stream()
+				.find {
+					it.name.startsWith("gradle-api")
+				}
+
+		def gradleApiSources = new File(gradleApiFile.absolutePath.replace(".jar", "-sources.jar"))
+		def url = "https://services.gradle.org/distributions/gradle-${GradleVersion.current().getVersion()}-src.zip"
+
+		gradleApiSources.delete()
+
+		println("Downloading (${url}) to (${gradleApiSources})")
+		gradleApiSources << new URL(url).newInputStream()
+	}
+}
+
+task printActionsTestName(type: PrintActionsTestName) {
+}
+
+/**
+ * Replaces invalid characters in test names for GitHub Actions artifacts.
+ */
+class PrintActionsTestName extends DefaultTask {
+	@Input
+	@Option(option = "name", description = "The test name")
+	String testName
+
+	@TaskAction
+	def run() {
+		def sanitised = testName.replace('*', '_')
+		new File(System.getenv().GITHUB_OUTPUT) << "\ntest=$sanitised"
+	}
+}
+
+apply from: rootProject.file('gradle/versions.gradle')
