@@ -1,7 +1,7 @@
 /*
- * This file is part of fabric-loom, licensed under the MIT License (MIT).
+ * This file is part of notebook-loom, licensed under the MIT License (MIT).
  *
- * Copyright (c) 2021-2024 FabricMC
+ * Copyright (c) 2021-2024 BookkeepersMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -53,8 +53,8 @@ import com.bookkeepersmc.loom.configuration.providers.minecraft.MinecraftJarConf
 import com.bookkeepersmc.loom.configuration.providers.minecraft.MinecraftSourceSets;
 import com.bookkeepersmc.loom.task.GenerateSourcesTask;
 import com.bookkeepersmc.loom.util.DeprecationHelper;
-import com.bookkeepersmc.loom.util.fmj.FabricModJson;
-import com.bookkeepersmc.loom.util.fmj.FabricModJsonFactory;
+import com.bookkeepersmc.loom.util.fmj.NotebookModJson;
+import com.bookkeepersmc.loom.util.fmj.NotebookModJsonFactory;
 import com.bookkeepersmc.loom.util.gradle.SourceSetHelper;
 import org.gradle.api.Action;
 import org.gradle.api.NamedDomainObjectContainer;
@@ -265,7 +265,7 @@ public abstract class LoomGradleExtensionApiImpl implements LoomGradleExtensionA
 	@Override
 	public String getModVersion() {
 		try {
-			final FabricModJson fabricModJson = FabricModJsonFactory.createFromSourceSetsNullable(SourceSetHelper.getMainSourceSet(getProject()));
+			final NotebookModJson fabricModJson = NotebookModJsonFactory.createFromSourceSetsNullable(SourceSetHelper.getMainSourceSet(getProject()));
 
 			if (fabricModJson == null) {
 				throw new RuntimeException("Could not find a fabric.mod.json file in the main sourceset");

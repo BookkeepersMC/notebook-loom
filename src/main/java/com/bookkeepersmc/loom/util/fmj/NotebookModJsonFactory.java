@@ -1,7 +1,7 @@
 /*
- * This file is part of fabric-loom, licensed under the MIT License (MIT).
+ * This file is part of notebook-loom, licensed under the MIT License (MIT).
  *
- * Copyright (c) 2024 FabricMC
+ * Copyright (c) 2022 BookkeepersMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,18 +22,8 @@
  * SOFTWARE.
  */
 
-package com.bookkeepersmc.loom.util.nmj;
+package com.bookkeepersmc.loom.util.fmj;
 
-import com.bookkeepersmc.loom.LoomGradlePlugin;
-import com.bookkeepersmc.loom.util.ZipUtils;
-import com.bookkeepersmc.loom.util.gradle.SourceSetHelper;
-import com.bookkeepersmc.loom.util.metadata.ModJsonSource;
-import com.google.gson.JsonObject;
-
-
-import org.gradle.api.tasks.SourceSet;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.VisibleForTesting;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,10 +34,26 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
+import com.bookkeepersmc.loom.LoomGradlePlugin;
+import com.bookkeepersmc.loom.util.ZipUtils;
+import com.bookkeepersmc.loom.util.gradle.SourceSetHelper;
+import com.bookkeepersmc.loom.util.metadata.ModJsonSource;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
+
+import org.gradle.api.tasks.SourceSet;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import static com.bookkeepersmc.loom.util.metadata.ModMetadataUtils.readInt;
 
+
 public final class NotebookModJsonFactory {
-	private static final String NOTEBOOK_MOD_JSON = "notebook.mod.json";
+	public static final String NOTEBOOK_MOD_JSON = "notebook.mod.json";
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(NotebookModJsonFactory.class);
 
 	private NotebookModJsonFactory() {
 	}
@@ -57,12 +63,15 @@ public final class NotebookModJsonFactory {
 		int schemaVersion = 0;
 
 		if (jsonObject.has("schema_version")) {
+			// V0 had no schemaVersion key.
 			schemaVersion = readInt(jsonObject, "schema_version");
 		}
 
 		return switch (schemaVersion) {
-			case 1 -> new NotebookModJsonV1(jsonObject, source);
-			default -> throw new UnsupportedOperationException(String.format("This version of notebook-loom doesn't support the newer notebook.mod.json schema version of (%s) Please update notebook-loom to be able to read this.", schemaVersion));
+		case 0 -> new NotebookModJsonV0(jsonObject, source);
+		case 1 -> new NotebookModJsonV1(jsonObject, source);
+		case 2 -> new NotebookModJsonV2(jsonObject, source);
+		default -> throw new UnsupportedOperationException(String.format("This version of notebook-loom doesn't support the newer notebook.mod.json schema version of (%s) Please update notebook-loom to be able to read this.", schemaVersion));
 		};
 	}
 
@@ -70,7 +79,7 @@ public final class NotebookModJsonFactory {
 		try {
 			return create(ZipUtils.unpackGson(zipPath, NOTEBOOK_MOD_JSON, JsonObject.class), new ModJsonSource.ZipSource(zipPath));
 		} catch (IOException e) {
-			throw new UncheckedIOException("Failed to read notebook.mod.json file in zip " + zipPath, e);
+			throw new UncheckedIOException("Failed to read notebook.mod.json file in zip: " + zipPath, e);
 		}
 	}
 
@@ -81,12 +90,13 @@ public final class NotebookModJsonFactory {
 		try {
 			jsonObject = ZipUtils.unpackGsonNullable(zipPath, NOTEBOOK_MOD_JSON, JsonObject.class);
 		} catch (IOException e) {
-			throw new UncheckedIOException("Failed to read zip " + zipPath, e);
+			throw new UncheckedIOException("Failed to read zip: " + zipPath, e);
 		}
 
 		if (jsonObject == null) {
 			return null;
 		}
+
 		return create(jsonObject, new ModJsonSource.ZipSource(zipPath));
 	}
 
@@ -112,6 +122,11 @@ public final class NotebookModJsonFactory {
 
 		try (Reader reader = Files.newBufferedReader(file.toPath(), StandardCharsets.UTF_8)) {
 			return create(LoomGradlePlugin.GSON.fromJson(reader, JsonObject.class), new ModJsonSource.SourceSetSource(sourceSets));
+		} catch (JsonSyntaxException e) {
+			LOGGER.warn("Failed to parse notebook.mod.json: {}", file.getAbsolutePath());
+			return null;
+		} catch (IOException e) {
+			throw new UncheckedIOException("Failed to read " + file.getAbsolutePath(), e);
 		}
 	}
 }

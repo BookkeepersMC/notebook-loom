@@ -51,9 +51,7 @@ def baseVersion = '1.0'
 
 def ENV = System.getenv()
 if (ENV.BUILD_NUMBER) {
-	version = baseVersion + '.' + ENV.BUILD_NUMBER
-} else {
-	version = baseVersion + '.local'
+	version = baseVersion + "." + ENV.BUILD_NUMBER
 }
 
 // We must build against the version of Kotlin Gradle ships with.
@@ -229,9 +227,6 @@ gradlePlugin {
 		}
 	}
 }
-
-
-
 
 import org.gradle.api.internal.artifacts.configurations.ConfigurationRoles
 import org.gradle.launcher.cli.KotlinDslVersion

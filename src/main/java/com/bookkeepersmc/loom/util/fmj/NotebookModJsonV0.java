@@ -1,7 +1,7 @@
 /*
- * This file is part of fabric-loom, licensed under the MIT License (MIT).
+ * This file is part of notebook-loom, licensed under the MIT License (MIT).
  *
- * Copyright (c) 2022 FabricMC
+ * Copyright (c) 2022 BookkeepersMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,8 +40,8 @@ import com.google.gson.JsonPrimitive;
 import org.jetbrains.annotations.Nullable;
 
 @Deprecated
-public final class FabricModJsonV0 extends FabricModJson {
-	FabricModJsonV0(JsonObject jsonObject, ModJsonSource source) {
+public final class NotebookModJsonV0 extends NotebookModJson {
+	NotebookModJsonV0(JsonObject jsonObject, ModJsonSource source) {
 		super(jsonObject, source);
 	}
 

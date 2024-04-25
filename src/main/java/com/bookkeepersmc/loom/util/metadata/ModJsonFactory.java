@@ -1,7 +1,7 @@
 /*
- * This file is part of fabric-loom, licensed under the MIT License (MIT).
+ * This file is part of notebook-loom, licensed under the MIT License (MIT).
  *
- * Copyright (c) 2024 FabricMC
+ * Copyright (c) 2024 BookkeepersMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,9 +28,8 @@ import com.bookkeepersmc.loom.api.metadata.ModJson;
 
 import com.bookkeepersmc.loom.configuration.metadata.ModMetadataHelper;
 
-import com.bookkeepersmc.loom.util.fmj.FabricModJsonFactory;
+import com.bookkeepersmc.loom.util.fmj.NotebookModJsonFactory;
 import com.bookkeepersmc.loom.util.gradle.SourceSetHelper;
-import com.bookkeepersmc.loom.util.nmj.NotebookModJsonFactory;
 
 import org.gradle.api.tasks.SourceSet;
 import org.jetbrains.annotations.Nullable;
@@ -42,27 +41,15 @@ import java.util.Optional;
 
 public class ModJsonFactory {
 	public static ModJson createFromZip(Path zipPath) {
-		if (ModMetadataHelper.isNotebookMod(zipPath)) {
-			return NotebookModJsonFactory.createFromZip(zipPath);
-		} else {
-			return FabricModJsonFactory.createFromZip(zipPath);
-		}
+		return NotebookModJsonFactory.createFromZip(zipPath);
 	}
 
 	public static ModJson createFromZipNullable(Path zipPath) {
-		if (ModMetadataHelper.isNotebookMod(zipPath)) {
 			return NotebookModJsonFactory.createFromZipNullable(zipPath);
-		} else {
-			return FabricModJsonFactory.createFromZipNullable(zipPath);
-		}
 	}
 
 	public static Optional<? extends ModJson> createFromZipOptional(Path zipPath) {
-		if (ModMetadataHelper.isNotebookMod(zipPath)) {
 			return NotebookModJsonFactory.createFromZipOptional(zipPath);
-		} else {
-			return FabricModJsonFactory.createFromZipOptional(zipPath);
-		}
 	}
 
 	@Nullable
@@ -70,8 +57,7 @@ public class ModJsonFactory {
 		File file = SourceSetHelper.findFirstFileInResource(ModMetadataHelper.NOTEBOOK_MOD_JSON, sourceSets);
 		if (file != null) {
 			return NotebookModJsonFactory.createFromSourceSetsNullable(sourceSets);
-		} else {
-			return FabricModJsonFactory.createFromSourceSetsNullable(sourceSets);
 		}
-			}
+		return null;
+	}
 }

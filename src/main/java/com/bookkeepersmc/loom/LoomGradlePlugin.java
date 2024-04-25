@@ -1,7 +1,7 @@
 /*
- * This file is part of fabric-loom, licensed under the MIT License (MIT).
+ * This file is part of notebook-loom, licensed under the MIT License (MIT).
  *
- * Copyright (c) 2016-2023 FabricMC
+ * Copyright (c) 2016-2023 BookkeepersMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -49,7 +49,7 @@ import org.gradle.api.plugins.PluginAware;
 
 public class LoomGradlePlugin implements BootstrappedPlugin {
 	public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-	public static final String LOOM_VERSION = Objects.requireNonNullElse(LoomGradlePlugin.class.getPackage().getImplementationVersion(), "0.0.0+unknown");
+	public static final String LOOM_VERSION = "1.0.2";
 
 	/**
 	 * An ordered list of setup job classes.

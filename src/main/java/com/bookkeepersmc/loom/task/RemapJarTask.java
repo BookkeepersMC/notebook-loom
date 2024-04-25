@@ -1,7 +1,7 @@
 /*
- * This file is part of fabric-loom, licensed under the MIT License (MIT).
+ * This file is part of notebook-loom, licensed under the MIT License (MIT).
  *
- * Copyright (c) 2021-2024 FabricMC
+ * Copyright (c) 2021-2024 BookkeepersMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -51,7 +51,7 @@ import com.bookkeepersmc.loom.util.ExceptionUtil;
 import com.bookkeepersmc.loom.util.Pair;
 import com.bookkeepersmc.loom.util.SidedClassVisitor;
 import com.bookkeepersmc.loom.util.ZipUtils;
-import com.bookkeepersmc.loom.util.fmj.FabricModJsonFactory;
+import com.bookkeepersmc.loom.util.fmj.NotebookModJsonFactory;
 import com.bookkeepersmc.loom.util.metadata.ModJsonFactory;
 import com.bookkeepersmc.loom.util.metadata.ModMetadataUtils;
 import com.bookkeepersmc.loom.util.service.BuildSharedServiceManager;
@@ -372,11 +372,11 @@ public abstract class RemapJarTask extends AbstractRemapJarTask {
 		}
 
 		private void optimizeFMJ() throws IOException {
-			if (!ZipUtils.contains(outputFile, FabricModJsonFactory.FABRIC_MOD_JSON)) {
+			if (!ZipUtils.contains(outputFile, NotebookModJsonFactory.NOTEBOOK_MOD_JSON)) {
 				return;
 			}
 
-			ZipUtils.transformJson(JsonObject.class, outputFile, FabricModJsonFactory.FABRIC_MOD_JSON, ModMetadataUtils::optimizeFmj);
+			ZipUtils.transformJson(JsonObject.class, outputFile, NotebookModJsonFactory.NOTEBOOK_MOD_JSON, ModMetadataUtils::optimizeFmj);
 		}
 	}
 

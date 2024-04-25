@@ -1,7 +1,7 @@
 /*
- * This file is part of fabric-loom, licensed under the MIT License (MIT).
+ * This file is part of notebook-loom, licensed under the MIT License (MIT).
  *
- * Copyright (c) 2022 FabricMC
+ * Copyright (c) 2022 BookkeepersMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,11 +38,11 @@ import com.google.gson.JsonObject;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
-public abstract sealed class FabricModJson implements ModJson permits FabricModJsonV0, FabricModJsonV1, FabricModJsonV2, FabricModJson.Mockable {
+public abstract sealed class NotebookModJson implements ModJson permits NotebookModJsonV0, NotebookModJsonV1, NotebookModJsonV2, NotebookModJson.Mockable {
 	protected final JsonObject jsonObject;
 	private final ModJsonSource source;
 
-	protected FabricModJson(JsonObject jsonObject, ModJsonSource source) {
+	protected NotebookModJson(JsonObject jsonObject, ModJsonSource source) {
 		this.jsonObject = Objects.requireNonNull(jsonObject);
 		this.source = Objects.requireNonNull(source);
 	}
@@ -121,7 +121,7 @@ public abstract sealed class FabricModJson implements ModJson permits FabricModJ
 	}
 
 	@VisibleForTesting
-	public abstract non-sealed class Mockable extends FabricModJson {
+	public abstract non-sealed class Mockable extends NotebookModJson {
 		private Mockable() {
 			super(null, null);
 			throw new AssertionError();

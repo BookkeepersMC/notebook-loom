@@ -1,7 +1,7 @@
 /*
- * This file is part of fabric-loom, licensed under the MIT License (MIT).
+ * This file is part of notebook-loom, licensed under the MIT License (MIT).
  *
- * Copyright (c) 2020-2023 FabricMC
+ * Copyright (c) 2020-2023 BookkeepersMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -39,8 +39,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import com.bookkeepersmc.loom.LoomGradleExtension;
 import com.bookkeepersmc.loom.util.download.DownloadException;
-import com.bookkeepersmc.loom.util.fmj.FabricModJson;
-import com.bookkeepersmc.loom.util.fmj.FabricModJsonFactory;
+import com.bookkeepersmc.loom.util.fmj.NotebookModJson;
+import com.bookkeepersmc.loom.util.fmj.NotebookModJsonFactory;
 import com.bookkeepersmc.loom.util.gradle.SourceSetHelper;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -158,7 +158,7 @@ public abstract class NotebookExtension {
 
 			settings.getModId().convention(getProject().provider(() -> {
 				try {
-					final FabricModJson fabricModJson = FabricModJsonFactory.createFromSourceSetsNullable(dataGenSourceSet);
+					final NotebookModJson fabricModJson = NotebookModJsonFactory.createFromSourceSetsNullable(dataGenSourceSet);
 
 					if (fabricModJson == null) {
 						throw new RuntimeException("Could not find a metadata file in the data source set or a value for DataGenerationSettings.getModId()");

@@ -1,7 +1,7 @@
 /*
- * This file is part of fabric-loom, licensed under the MIT License (MIT).
+ * This file is part of notebook-loom, licensed under the MIT License (MIT).
  *
- * Copyright (c) 2023 FabricMC
+ * Copyright (c) 2023 BookkeepersMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,6 +37,7 @@ import com.bookkeepersmc.loom.configuration.metadata.ModEnvironment;
 
 import com.bookkeepersmc.loom.util.LazyCloseable;
 
+import com.bookkeepersmc.loom.util.fmj.NotebookModJson;
 import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.accesswidener.AccessWidenerReader;
@@ -46,7 +47,7 @@ import net.fabricmc.accesswidener.TransitiveOnlyFilter;
 import net.fabricmc.tinyremapper.TinyRemapper;
 
 /**
- * {@link AccessWidenerEntry} implementation for a {@link com.bookkeepersmc.loom.util.fmj.FabricModJson}.
+ * {@link AccessWidenerEntry} implementation for a {@link NotebookModJson}.
  */
 public record ModAccessWidenerEntry(ModJson mod, String path, ModEnvironment environment, boolean transitiveOnly) implements AccessWidenerEntry {
 	public static List<ModAccessWidenerEntry> readAll(ModJson modJson, boolean transitiveOnly) {
