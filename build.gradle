@@ -197,6 +197,7 @@ spotless {
 	java {
 		licenseHeaderFile(rootProject.file("HEADER")).yearSeparator("-")
 		targetExclude("**/loom/util/DownloadUtil.java")
+		removeUnusedImports()
 	}
 
 	groovy {

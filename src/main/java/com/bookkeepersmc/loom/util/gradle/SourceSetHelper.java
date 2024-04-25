@@ -41,7 +41,6 @@ import javax.xml.xpath.XPathFactory;
 
 import com.bookkeepersmc.loom.api.ModSettings;
 import com.bookkeepersmc.loom.configuration.ide.idea.IdeaUtils;
-import com.bookkeepersmc.loom.util.gradle.SourceSetReference;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.plugins.JavaPluginExtension;

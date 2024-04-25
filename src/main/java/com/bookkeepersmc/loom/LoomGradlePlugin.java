@@ -25,7 +25,6 @@
 package com.bookkeepersmc.loom;
 
 import java.util.List;
-import java.util.Objects;
 
 import com.bookkeepersmc.loom.api.LoomGradleExtensionAPI;
 import com.bookkeepersmc.loom.bootstrap.BootstrappedPlugin;
