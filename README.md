@@ -12,4 +12,4 @@ maven {url = "https://bookkeepersmc.github.io" }
 2. Add the plugin
 ```gradle
 id 'notebook-loom' version '1.0-SNAPSHOT'
-``
+```
