@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.fabricmc.loom.util.fmj;
+package net.fabricmc.loom.util.nmj;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,8 +36,8 @@ import com.google.gson.JsonPrimitive;
 import org.jetbrains.annotations.Nullable;
 
 @Deprecated
-public final class FabricModJsonV0 extends FabricModJson {
-	FabricModJsonV0(JsonObject jsonObject, FabricModJsonSource source) {
+public final class NotebookModJsonV0 extends NotebookModJson {
+	NotebookModJsonV0(JsonObject jsonObject, NotebookModJsonSource source) {
 		super(jsonObject, source);
 	}
 
@@ -70,13 +70,13 @@ public final class FabricModJsonV0 extends FabricModJson {
 					if (arrayElement instanceof JsonPrimitive jsonPrimitive && jsonPrimitive.isString()) {
 						mixins.add(jsonPrimitive.getAsString());
 					} else {
-						throw new FabricModJsonUtils.ParseException("Expected entries in mixin %s to be an array of strings", key);
+						throw new NotebookModJsonUtils.ParseException("Expected entries in mixin %s to be an array of strings", key);
 					}
 				}
 			} else if (jsonElement instanceof JsonPrimitive jsonPrimitive && jsonPrimitive.isString()) {
 				mixins.add(jsonPrimitive.getAsString());
 			} else {
-				throw new FabricModJsonUtils.ParseException("Expected mixin %s to be a string or an array of strings", key);
+				throw new NotebookModJsonUtils.ParseException("Expected mixin %s to be a string or an array of strings", key);
 			}
 		}
 

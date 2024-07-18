@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.fabricmc.loom.util.fmj;
+package net.fabricmc.loom.util.nmj;
 
 import java.util.Objects;
 

@@ -35,7 +35,7 @@ import net.fabricmc.accesswidener.AccessWidenerReader;
 import net.fabricmc.accesswidener.AccessWidenerVisitor;
 import net.fabricmc.loom.util.Checksum;
 import net.fabricmc.loom.util.LazyCloseable;
-import net.fabricmc.loom.util.fmj.ModEnvironment;
+import net.fabricmc.loom.util.nmj.ModEnvironment;
 import net.fabricmc.tinyremapper.TinyRemapper;
 
 public record LocalAccessWidenerEntry(Path path, String hash) implements AccessWidenerEntry {

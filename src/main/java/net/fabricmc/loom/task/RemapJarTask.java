@@ -73,9 +73,9 @@ import net.fabricmc.loom.util.ExceptionUtil;
 import net.fabricmc.loom.util.Pair;
 import net.fabricmc.loom.util.SidedClassVisitor;
 import net.fabricmc.loom.util.ZipUtils;
-import net.fabricmc.loom.util.fmj.FabricModJson;
-import net.fabricmc.loom.util.fmj.FabricModJsonFactory;
-import net.fabricmc.loom.util.fmj.FabricModJsonUtils;
+import net.fabricmc.loom.util.nmj.NotebookModJson;
+import net.fabricmc.loom.util.nmj.NotebookModJsonFactory;
+import net.fabricmc.loom.util.nmj.NotebookModJsonUtils;
 import net.fabricmc.loom.util.service.BuildSharedServiceManager;
 import net.fabricmc.loom.util.service.UnsafeWorkQueueHelper;
 import net.fabricmc.tinyremapper.OutputConsumerPath;
@@ -176,13 +176,13 @@ public abstract class RemapJarTask extends AbstractRemapJarTask {
 		final LoomGradleExtension extension = LoomGradleExtension.get(getProject());
 		final MixinExtension mixinExtension = extension.getMixin();
 
-		final FabricModJson fabricModJson = FabricModJsonFactory.createFromZipNullable(getInputFile().getAsFile().get().toPath());
+		final NotebookModJson notebookModJson = NotebookModJsonFactory.createFromZipNullable(getInputFile().getAsFile().get().toPath());
 
-		if (fabricModJson == null) {
+		if (notebookModJson == null) {
 			return;
 		}
 
-		final Collection<String> allMixinConfigs = fabricModJson.getMixinConfigurations();
+		final Collection<String> allMixinConfigs = notebookModJson.getMixinConfigurations();
 
 		for (SourceSet sourceSet : mixinExtension.getMixinSourceSets()) {
 			MixinExtension.MixinInformationContainer container = Objects.requireNonNull(
@@ -369,11 +369,11 @@ public abstract class RemapJarTask extends AbstractRemapJarTask {
 		}
 
 		private void optimizeFMJ() throws IOException {
-			if (!ZipUtils.contains(outputFile, FabricModJsonFactory.NOTEBOOK_MOD_JSON)) {
+			if (!ZipUtils.contains(outputFile, NotebookModJsonFactory.NOTEBOOK_MOD_JSON)) {
 				return;
 			}
 
-			ZipUtils.transformJson(JsonObject.class, outputFile, FabricModJsonFactory.NOTEBOOK_MOD_JSON, FabricModJsonUtils::optimizeFmj);
+			ZipUtils.transformJson(JsonObject.class, outputFile, NotebookModJsonFactory.NOTEBOOK_MOD_JSON, NotebookModJsonUtils::optimizeFmj);
 		}
 	}
 

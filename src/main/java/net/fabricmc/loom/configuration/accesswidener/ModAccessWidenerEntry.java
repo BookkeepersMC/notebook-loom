@@ -38,15 +38,15 @@ import net.fabricmc.accesswidener.AccessWidenerVisitor;
 import net.fabricmc.accesswidener.TransitiveOnlyFilter;
 import net.fabricmc.loom.api.mappings.layered.MappingsNamespace;
 import net.fabricmc.loom.util.LazyCloseable;
-import net.fabricmc.loom.util.fmj.FabricModJson;
-import net.fabricmc.loom.util.fmj.ModEnvironment;
+import net.fabricmc.loom.util.nmj.NotebookModJson;
+import net.fabricmc.loom.util.nmj.ModEnvironment;
 import net.fabricmc.tinyremapper.TinyRemapper;
 
 /**
- * {@link AccessWidenerEntry} implementation for a {@link FabricModJson}.
+ * {@link AccessWidenerEntry} implementation for a {@link NotebookModJson}.
  */
-public record ModAccessWidenerEntry(FabricModJson mod, String path, ModEnvironment environment, boolean transitiveOnly) implements AccessWidenerEntry {
-	public static List<ModAccessWidenerEntry> readAll(FabricModJson modJson, boolean transitiveOnly) {
+public record ModAccessWidenerEntry(NotebookModJson mod, String path, ModEnvironment environment, boolean transitiveOnly) implements AccessWidenerEntry {
+	public static List<ModAccessWidenerEntry> readAll(NotebookModJson modJson, boolean transitiveOnly) {
 		var entries = new ArrayList<ModAccessWidenerEntry>();
 
 		for (Map.Entry<String, ModEnvironment> entry : modJson.getClassTweakers().entrySet()) {

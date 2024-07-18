@@ -60,7 +60,7 @@ import net.fabricmc.loom.util.Constants;
 import net.fabricmc.loom.util.LazyCloseable;
 import net.fabricmc.loom.util.Pair;
 import net.fabricmc.loom.util.ZipUtils;
-import net.fabricmc.loom.util.fmj.FabricModJson;
+import net.fabricmc.loom.util.nmj.NotebookModJson;
 import net.fabricmc.mappingio.tree.MappingTree;
 import net.fabricmc.mappingio.tree.MemoryMappingTree;
 import net.fabricmc.tinyremapper.TinyRemapper;
@@ -217,9 +217,9 @@ public abstract class InterfaceInjectionProcessor implements MinecraftJarProcess
 	}
 
 	private record InjectedInterface(String modId, String className, String ifaceName, @Nullable String generics) {
-		public static List<InjectedInterface> fromMod(FabricModJson fabricModJson) {
-			final String modId = fabricModJson.getId();
-			final JsonElement jsonElement = fabricModJson.getCustom(Constants.CustomModJsonKeys.INJECTED_INTERFACE);
+		public static List<InjectedInterface> fromMod(NotebookModJson notebookModJson) {
+			final String modId = notebookModJson.getId();
+			final JsonElement jsonElement = notebookModJson.getCustom(Constants.CustomModJsonKeys.INJECTED_INTERFACE);
 
 			if (jsonElement == null) {
 				return Collections.emptyList();
@@ -255,8 +255,8 @@ public abstract class InterfaceInjectionProcessor implements MinecraftJarProcess
 			return result;
 		}
 
-		public static List<InjectedInterface> fromMods(List<FabricModJson> fabricModJsons) {
-			return fabricModJsons.stream()
+		public static List<InjectedInterface> fromMods(List<NotebookModJson> notebookModJsons) {
+			return notebookModJsons.stream()
 					.map(InjectedInterface::fromMod)
 					.flatMap(List::stream)
 					.toList();

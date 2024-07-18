@@ -62,7 +62,7 @@ import org.slf4j.LoggerFactory;
 import net.fabricmc.loom.LoomGradlePlugin;
 import net.fabricmc.loom.task.AbstractLoomTask;
 import net.fabricmc.loom.util.ZipReprocessorUtil;
-import net.fabricmc.loom.util.fmj.FabricModJsonFactory;
+import net.fabricmc.loom.util.nmj.NotebookModJsonFactory;
 
 public abstract class NestableJarGenerationTask extends AbstractLoomTask {
 	private static final Logger LOGGER = LoggerFactory.getLogger(NestableJarGenerationTask.class);
@@ -222,7 +222,7 @@ public abstract class NestableJarGenerationTask extends AbstractLoomTask {
 			throw new UncheckedIOException("Failed to copy mod file %s".formatted(input), e);
 		}
 
-		if (FabricModJsonFactory.isModJar(input)) {
+		if (NotebookModJsonFactory.isModJar(input)) {
 			// Input is a mod, nothing needs to be done.
 			return;
 		}

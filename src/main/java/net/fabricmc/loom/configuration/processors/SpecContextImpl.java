@@ -47,9 +47,9 @@ import net.fabricmc.loom.LoomGradleExtension;
 import net.fabricmc.loom.api.RemapConfigurationSettings;
 import net.fabricmc.loom.api.processor.SpecContext;
 import net.fabricmc.loom.util.Constants;
-import net.fabricmc.loom.util.fmj.FabricModJson;
-import net.fabricmc.loom.util.fmj.FabricModJsonFactory;
-import net.fabricmc.loom.util.fmj.FabricModJsonHelpers;
+import net.fabricmc.loom.util.nmj.NotebookModJson;
+import net.fabricmc.loom.util.nmj.NotebookModJsonFactory;
+import net.fabricmc.loom.util.nmj.NotebookModJsonHelpers;
 import net.fabricmc.loom.util.gradle.GradleUtils;
 
 /**
@@ -57,29 +57,29 @@ import net.fabricmc.loom.util.gradle.GradleUtils;
  * @param localMods Mods found in the current project.
  * @param compileRuntimeMods Dependent mods found in both the compile and runtime classpath.
  */
-public record SpecContextImpl(List<FabricModJson> modDependencies, List<FabricModJson> localMods, List<FabricModJson> compileRuntimeMods) implements SpecContext {
+public record SpecContextImpl(List<NotebookModJson> modDependencies, List<NotebookModJson> localMods, List<NotebookModJson> compileRuntimeMods) implements SpecContext {
 	public static SpecContextImpl create(Project project) {
-		final Map<String, List<FabricModJson>> fmjCache = new HashMap<>();
-		return new SpecContextImpl(getDependentMods(project, fmjCache), FabricModJsonHelpers.getModsInProject(project), getCompileRuntimeMods(project, fmjCache));
+		final Map<String, List<NotebookModJson>> fmjCache = new HashMap<>();
+		return new SpecContextImpl(getDependentMods(project, fmjCache), NotebookModJsonHelpers.getModsInProject(project), getCompileRuntimeMods(project, fmjCache));
 	}
 
 	// Reruns a list of mods found on both the compile and/or runtime classpaths
-	private static List<FabricModJson> getDependentMods(Project project, Map<String, List<FabricModJson>> fmjCache) {
+	private static List<NotebookModJson> getDependentMods(Project project, Map<String, List<NotebookModJson>> fmjCache) {
 		final LoomGradleExtension extension = LoomGradleExtension.get(project);
-		var mods = new ArrayList<FabricModJson>();
+		var mods = new ArrayList<NotebookModJson>();
 
 		for (RemapConfigurationSettings entry : extension.getRemapConfigurations()) {
 			final Set<File> artifacts = entry.getSourceConfiguration().get().resolve();
 
 			for (File artifact : artifacts) {
-				final List<FabricModJson> fabricModJson = fmjCache.computeIfAbsent(artifact.toPath().toAbsolutePath().toString(), $ -> {
-					return FabricModJsonFactory.createFromZipOptional(artifact.toPath())
+				final List<NotebookModJson> notebookModJson = fmjCache.computeIfAbsent(artifact.toPath().toAbsolutePath().toString(), $ -> {
+					return NotebookModJsonFactory.createFromZipOptional(artifact.toPath())
 							.map(List::of)
 							.orElseGet(List::of);
 				});
 
-				if (!fabricModJson.isEmpty()) {
-					mods.add(fabricModJson.get(0));
+				if (!notebookModJson.isEmpty()) {
+					mods.add(notebookModJson.get(0));
 				}
 			}
 		}
@@ -88,7 +88,7 @@ public record SpecContextImpl(List<FabricModJson> modDependencies, List<FabricMo
 			// Add all the dependent projects
 			for (Project dependentProject : getDependentProjects(project).toList()) {
 				mods.addAll(fmjCache.computeIfAbsent(dependentProject.getPath(), $ -> {
-					return FabricModJsonHelpers.getModsInProject(dependentProject);
+					return NotebookModJsonHelpers.getModsInProject(dependentProject);
 				}));
 			}
 		}
@@ -105,12 +105,12 @@ public record SpecContextImpl(List<FabricModJson> modDependencies, List<FabricMo
 	}
 
 	// Returns a list of mods that are on both to compile and runtime classpath
-	private static List<FabricModJson> getCompileRuntimeMods(Project project, Map<String, List<FabricModJson>> fmjCache) {
+	private static List<NotebookModJson> getCompileRuntimeMods(Project project, Map<String, List<NotebookModJson>> fmjCache) {
 		var mods = new ArrayList<>(getCompileRuntimeModsFromRemapConfigs(project, fmjCache).toList());
 
 		for (Project dependentProject : getCompileRuntimeProjectDependencies(project).toList()) {
 			mods.addAll(fmjCache.computeIfAbsent(dependentProject.getPath(), $ -> {
-				return FabricModJsonHelpers.getModsInProject(dependentProject);
+				return NotebookModJsonHelpers.getModsInProject(dependentProject);
 			}));
 		}
 
@@ -118,7 +118,7 @@ public record SpecContextImpl(List<FabricModJson> modDependencies, List<FabricMo
 	}
 
 	// Returns a list of jar mods that are found on the compile and runtime remapping configurations
-	private static Stream<FabricModJson> getCompileRuntimeModsFromRemapConfigs(Project project, Map<String, List<FabricModJson>> fmjCache) {
+	private static Stream<NotebookModJson> getCompileRuntimeModsFromRemapConfigs(Project project, Map<String, List<NotebookModJson>> fmjCache) {
 		final LoomGradleExtension extension = LoomGradleExtension.get(project);
 		final List<Path> runtimeEntries = extension.getRuntimeRemapConfigurations().stream()
 				.filter(settings -> settings.getApplyDependencyTransforms().get())
@@ -130,15 +130,15 @@ public record SpecContextImpl(List<FabricModJson> modDependencies, List<FabricMo
 				.flatMap(resolveArtifacts(project, false))
 				.filter(runtimeEntries::contains) // Use the intersection of the two configurations.
 				.map(zipPath -> {
-					final List<FabricModJson> list = fmjCache.computeIfAbsent(zipPath.toAbsolutePath().toString(), $ -> {
-						return FabricModJsonFactory.createFromZipOptional(zipPath)
+					final List<NotebookModJson> list = fmjCache.computeIfAbsent(zipPath.toAbsolutePath().toString(), $ -> {
+						return NotebookModJsonFactory.createFromZipOptional(zipPath)
 								.map(List::of)
 								.orElseGet(List::of);
 					});
 					return list.isEmpty() ? null : list.get(0);
 				})
 				.filter(Objects::nonNull)
-				.sorted(Comparator.comparing(FabricModJson::getId));
+				.sorted(Comparator.comparing(NotebookModJson::getId));
 	}
 
 	private static Function<RemapConfigurationSettings, Stream<Path>> resolveArtifacts(Project project, boolean runtime) {
@@ -171,12 +171,12 @@ public record SpecContextImpl(List<FabricModJson> modDependencies, List<FabricMo
 	}
 
 	// Sort to ensure stable caching
-	private static List<FabricModJson> sorted(List<FabricModJson> mods) {
-		return mods.stream().sorted(Comparator.comparing(FabricModJson::getId)).toList();
+	private static List<NotebookModJson> sorted(List<NotebookModJson> mods) {
+		return mods.stream().sorted(Comparator.comparing(NotebookModJson::getId)).toList();
 	}
 
 	@Override
-	public List<FabricModJson> modDependenciesCompileRuntime() {
+	public List<NotebookModJson> modDependenciesCompileRuntime() {
 		return compileRuntimeMods;
 	}
 }

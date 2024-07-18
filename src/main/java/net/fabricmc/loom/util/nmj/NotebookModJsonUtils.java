@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.fabricmc.loom.util.fmj;
+package net.fabricmc.loom.util.nmj;
 
 import java.util.Locale;
 import java.util.Map;
@@ -32,8 +32,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
-public final class FabricModJsonUtils {
-	private FabricModJsonUtils() {
+public final class NotebookModJsonUtils {
+	private NotebookModJsonUtils() {
 	}
 
 	public static String readString(JsonObject jsonObject, String key) {

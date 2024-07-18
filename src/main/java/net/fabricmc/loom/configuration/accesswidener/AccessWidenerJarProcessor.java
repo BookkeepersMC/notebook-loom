@@ -44,8 +44,8 @@ import net.fabricmc.loom.api.processor.MinecraftJarProcessor;
 import net.fabricmc.loom.api.processor.ProcessorContext;
 import net.fabricmc.loom.api.processor.SpecContext;
 import net.fabricmc.loom.util.LazyCloseable;
-import net.fabricmc.loom.util.fmj.FabricModJson;
-import net.fabricmc.loom.util.fmj.ModEnvironment;
+import net.fabricmc.loom.util.nmj.NotebookModJson;
+import net.fabricmc.loom.util.nmj.ModEnvironment;
 import net.fabricmc.tinyremapper.TinyRemapper;
 
 public class AccessWidenerJarProcessor implements MinecraftJarProcessor<AccessWidenerJarProcessor.Spec> {
@@ -84,8 +84,8 @@ public class AccessWidenerJarProcessor implements MinecraftJarProcessor<AccessWi
 		 */
 
 		if (includeTransitive) {
-			for (FabricModJson fabricModJson : context.modDependencies()) {
-				accessWideners.addAll(ModAccessWidenerEntry.readAll(fabricModJson, true));
+			for (NotebookModJson notebookModJson : context.modDependencies()) {
+				accessWideners.addAll(ModAccessWidenerEntry.readAll(notebookModJson, true));
 			}
 		}
 

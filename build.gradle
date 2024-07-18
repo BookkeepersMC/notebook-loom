@@ -52,7 +52,7 @@ group = 'com.bookkeepersmc'
 def baseVersion = '1.0'
 
 def ENV = System.getenv()
-version = baseVersion + '.' + '3'
+version = baseVersion + '.' + project.minorVersion
 
 // We must build against the version of Kotlin Gradle ships with.
 def kotlinVersion = KotlinDslVersion.current().getKotlinVersion()
@@ -163,9 +163,6 @@ dependencies {
 
 	// source code remapping
 	implementation libs.fabric.mercury
-	implementation (libs.mercury.mixin) {
-		transitive false
-	}
 
 	// Kotlin
 	implementation(libs.kotlin.metadata) {

@@ -34,8 +34,8 @@ import net.fabricmc.accesswidener.AccessWidenerReader;
 import net.fabricmc.accesswidener.AccessWidenerRemapper;
 import net.fabricmc.accesswidener.AccessWidenerWriter;
 import net.fabricmc.loom.api.mappings.layered.MappingsNamespace;
-import net.fabricmc.loom.util.fmj.FabricModJson;
-import net.fabricmc.loom.util.fmj.FabricModJsonFactory;
+import net.fabricmc.loom.util.nmj.NotebookModJson;
+import net.fabricmc.loom.util.nmj.NotebookModJsonFactory;
 
 public class AccessWidenerUtils {
 	/**
@@ -57,12 +57,12 @@ public class AccessWidenerUtils {
 	}
 
 	public static AccessWidenerData readAccessWidenerData(Path inputJar) throws IOException {
-		if (!FabricModJsonFactory.isModJar(inputJar)) {
+		if (!NotebookModJsonFactory.isModJar(inputJar)) {
 			return null;
 		}
 
-		final FabricModJson fabricModJson = FabricModJsonFactory.createFromZip(inputJar);
-		final List<String> classTweakers = List.copyOf(fabricModJson.getClassTweakers().keySet());
+		final NotebookModJson notebookModJson = NotebookModJsonFactory.createFromZip(inputJar);
+		final List<String> classTweakers = List.copyOf(notebookModJson.getClassTweakers().keySet());
 
 		if (classTweakers.isEmpty()) {
 			return null;
@@ -73,7 +73,7 @@ public class AccessWidenerUtils {
 		}
 
 		final String accessWidenerPath = classTweakers.get(0);
-		final byte[] accessWidener = fabricModJson.getSource().read(accessWidenerPath);
+		final byte[] accessWidener = notebookModJson.getSource().read(accessWidenerPath);
 		final AccessWidenerReader.Header header = AccessWidenerReader.readHeader(accessWidener);
 
 		return new AccessWidenerData(accessWidenerPath, header, accessWidener);

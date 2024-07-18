@@ -44,7 +44,7 @@ import net.fabricmc.loom.LoomGradlePlugin;
 import net.fabricmc.loom.configuration.InstallerData;
 import net.fabricmc.loom.util.Constants;
 import net.fabricmc.loom.util.FileSystemUtil;
-import net.fabricmc.loom.util.fmj.FabricModJsonFactory;
+import net.fabricmc.loom.util.nmj.NotebookModJsonFactory;
 
 public record ArtifactMetadata(boolean isFabricMod, RemapRequirements remapRequirements, @Nullable InstallerData installerData, MixinRemapType mixinRemapType, List<String> knownIdyBsms) {
 	private static final String INSTALLER_PATH = "fabric-installer.json";
@@ -57,7 +57,7 @@ public record ArtifactMetadata(boolean isFabricMod, RemapRequirements remapRequi
 		List<String> knownIndyBsms = new ArrayList<>();
 
 		try (FileSystemUtil.Delegate fs = FileSystemUtil.getJarFileSystem(artifact.path())) {
-			isFabricMod = FabricModJsonFactory.containsMod(fs);
+			isFabricMod = NotebookModJsonFactory.containsMod(fs);
 			final Path manifestPath = fs.getPath(Constants.Manifest.PATH);
 
 			if (Files.exists(manifestPath)) {

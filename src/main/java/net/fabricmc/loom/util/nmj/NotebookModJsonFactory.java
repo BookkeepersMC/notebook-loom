@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package net.fabricmc.loom.util.fmj;
+package net.fabricmc.loom.util.nmj;
 
-import static net.fabricmc.loom.util.fmj.FabricModJsonUtils.readInt;
+import static net.fabricmc.loom.util.nmj.NotebookModJsonUtils.readInt;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,16 +48,16 @@ import net.fabricmc.loom.util.FileSystemUtil;
 import net.fabricmc.loom.util.ZipUtils;
 import net.fabricmc.loom.util.gradle.SourceSetHelper;
 
-public final class FabricModJsonFactory {
+public final class NotebookModJsonFactory {
 	public static final String NOTEBOOK_MOD_JSON = "notebook.mod.json";
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(FabricModJsonFactory.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(NotebookModJsonFactory.class);
 
-	private FabricModJsonFactory() {
+	private NotebookModJsonFactory() {
 	}
 
 	@VisibleForTesting
-	public static FabricModJson create(JsonObject jsonObject, FabricModJsonSource source) {
+	public static NotebookModJson create(JsonObject jsonObject, NotebookModJsonSource source) {
 		int schemaVersion = 0;
 
 		if (jsonObject.has("schemaVersion")) {
@@ -66,16 +66,16 @@ public final class FabricModJsonFactory {
 		}
 
 		return switch (schemaVersion) {
-		case 0 -> new FabricModJsonV0(jsonObject, source);
-		case 1 -> new FabricModJsonV1(jsonObject, source);
-		case 2 -> new FabricModJsonV2(jsonObject, source);
+		case 0 -> new NotebookModJsonV0(jsonObject, source);
+		case 1 -> new NotebookModJsonV1(jsonObject, source);
+		case 2 -> new NotebookModJsonV2(jsonObject, source);
 		default -> throw new UnsupportedOperationException(String.format("This version of fabric-loom doesn't support the newer fabric.mod.json schema version of (%s) Please update fabric-loom to be able to read this.", schemaVersion));
 		};
 	}
 
-	public static FabricModJson createFromZip(Path zipPath) {
+	public static NotebookModJson createFromZip(Path zipPath) {
 		try {
-			return create(ZipUtils.unpackGson(zipPath, NOTEBOOK_MOD_JSON, JsonObject.class), new FabricModJsonSource.ZipSource(zipPath));
+			return create(ZipUtils.unpackGson(zipPath, NOTEBOOK_MOD_JSON, JsonObject.class), new NotebookModJsonSource.ZipSource(zipPath));
 		} catch (IOException e) {
 			throw new UncheckedIOException("Failed to read fabric.mod.json file in zip: " + zipPath, e);
 		} catch (JsonSyntaxException e) {
@@ -84,7 +84,7 @@ public final class FabricModJsonFactory {
 	}
 
 	@Nullable
-	public static FabricModJson createFromZipNullable(Path zipPath) {
+	public static NotebookModJson createFromZipNullable(Path zipPath) {
 		JsonObject jsonObject;
 
 		try {
@@ -99,15 +99,15 @@ public final class FabricModJsonFactory {
 			return null;
 		}
 
-		return create(jsonObject, new FabricModJsonSource.ZipSource(zipPath));
+		return create(jsonObject, new NotebookModJsonSource.ZipSource(zipPath));
 	}
 
-	public static Optional<FabricModJson> createFromZipOptional(Path zipPath) {
+	public static Optional<NotebookModJson> createFromZipOptional(Path zipPath) {
 		return Optional.ofNullable(createFromZipNullable(zipPath));
 	}
 
 	@Nullable
-	public static FabricModJson createFromSourceSetsNullable(SourceSet... sourceSets) throws IOException {
+	public static NotebookModJson createFromSourceSetsNullable(SourceSet... sourceSets) throws IOException {
 		final File file = SourceSetHelper.findFirstFileInResource(NOTEBOOK_MOD_JSON, sourceSets);
 
 		if (file == null) {
@@ -115,7 +115,7 @@ public final class FabricModJsonFactory {
 		}
 
 		try (Reader reader = Files.newBufferedReader(file.toPath(), StandardCharsets.UTF_8)) {
-			return create(LoomGradlePlugin.GSON.fromJson(reader, JsonObject.class), new FabricModJsonSource.SourceSetSource(sourceSets));
+			return create(LoomGradlePlugin.GSON.fromJson(reader, JsonObject.class), new NotebookModJsonSource.SourceSetSource(sourceSets));
 		} catch (JsonSyntaxException e) {
 			LOGGER.warn("Failed to parse fabric.mod.json: {}", file.getAbsolutePath());
 			return null;
@@ -129,10 +129,10 @@ public final class FabricModJsonFactory {
 	}
 
 	public static boolean isModJar(Path input) {
-		return ZipUtils.contains(input, NOTEBOOK_MOD_JSON);
+		return ZipUtils.contains(input, NOTEBOOK_MOD_JSON) || ZipUtils.contains(input, "fabric.mod.json");
 	}
 
 	public static boolean containsMod(FileSystemUtil.Delegate fs) {
-		return Files.exists(fs.getPath(NOTEBOOK_MOD_JSON));
+		return Files.exists(fs.getPath(NOTEBOOK_MOD_JSON)) || Files.exists(fs.getPath("fabric.mod.json"));
 	}
 }

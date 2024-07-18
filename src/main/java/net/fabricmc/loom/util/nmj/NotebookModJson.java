@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package net.fabricmc.loom.util.fmj;
+package net.fabricmc.loom.util.nmj;
 
-import static net.fabricmc.loom.util.fmj.FabricModJsonUtils.readString;
+import static net.fabricmc.loom.util.nmj.NotebookModJsonUtils.readString;
 
 import java.util.List;
 import java.util.Map;
@@ -35,11 +35,11 @@ import com.google.gson.JsonObject;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
-public abstract sealed class FabricModJson permits FabricModJsonV0, FabricModJsonV1, FabricModJsonV2, FabricModJson.Mockable {
+public abstract sealed class NotebookModJson permits NotebookModJsonV0, NotebookModJsonV1, NotebookModJsonV2, NotebookModJson.Mockable {
 	protected final JsonObject jsonObject;
-	private final FabricModJsonSource source;
+	private final NotebookModJsonSource source;
 
-	protected FabricModJson(JsonObject jsonObject, FabricModJsonSource source) {
+	protected NotebookModJson(JsonObject jsonObject, NotebookModJsonSource source) {
 		this.jsonObject = Objects.requireNonNull(jsonObject);
 		this.source = Objects.requireNonNull(source);
 	}
@@ -61,7 +61,7 @@ public abstract sealed class FabricModJson permits FabricModJsonV0, FabricModJso
 
 	public abstract Map<String, ModEnvironment> getClassTweakers();
 
-	public final FabricModJsonSource getSource() {
+	public final NotebookModJsonSource getSource() {
 		return source;
 	}
 
@@ -76,7 +76,7 @@ public abstract sealed class FabricModJson permits FabricModJsonV0, FabricModJso
 	}
 
 	@VisibleForTesting
-	public abstract non-sealed class Mockable extends FabricModJson {
+	public abstract non-sealed class Mockable extends NotebookModJson {
 		private Mockable() {
 			super(null, null);
 			throw new AssertionError();

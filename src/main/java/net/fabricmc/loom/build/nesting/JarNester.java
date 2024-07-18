@@ -40,7 +40,7 @@ import org.slf4j.Logger;
 
 import net.fabricmc.loom.util.Pair;
 import net.fabricmc.loom.util.ZipUtils;
-import net.fabricmc.loom.util.fmj.FabricModJsonFactory;
+import net.fabricmc.loom.util.nmj.NotebookModJsonFactory;
 
 public class JarNester {
 	public static void nestJars(Collection<File> jars, File modJar, Logger logger) {
@@ -49,7 +49,7 @@ public class JarNester {
 			return;
 		}
 
-		Preconditions.checkArgument(FabricModJsonFactory.isModJar(modJar), "Cannot nest jars into none mod jar " + modJar.getName());
+		Preconditions.checkArgument(NotebookModJsonFactory.isModJar(modJar), "Cannot nest jars into none mod jar " + modJar.getName());
 
 		try {
 			ZipUtils.add(modJar.toPath(), jars.stream().map(file -> {
@@ -69,7 +69,7 @@ public class JarNester {
 
 				for (File file : jars) {
 					String nestedJarPath = "META-INF/jars/" + file.getName();
-					Preconditions.checkArgument(FabricModJsonFactory.isModJar(file), "Cannot nest none mod jar: " + file.getName());
+					Preconditions.checkArgument(NotebookModJsonFactory.isModJar(file), "Cannot nest none mod jar: " + file.getName());
 
 					for (JsonElement nestedJar : nestedJars) {
 						JsonObject jsonObject = nestedJar.getAsJsonObject();

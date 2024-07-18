@@ -24,10 +24,10 @@
 
 package net.fabricmc.loom.configuration.sandbox;
 
-import static net.fabricmc.loom.util.fmj.FabricModJsonUtils.ParseException;
-import static net.fabricmc.loom.util.fmj.FabricModJsonUtils.getJsonObject;
-import static net.fabricmc.loom.util.fmj.FabricModJsonUtils.readInt;
-import static net.fabricmc.loom.util.fmj.FabricModJsonUtils.readString;
+import static net.fabricmc.loom.util.nmj.NotebookModJsonUtils.ParseException;
+import static net.fabricmc.loom.util.nmj.NotebookModJsonUtils.getJsonObject;
+import static net.fabricmc.loom.util.nmj.NotebookModJsonUtils.readInt;
+import static net.fabricmc.loom.util.nmj.NotebookModJsonUtils.readString;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;

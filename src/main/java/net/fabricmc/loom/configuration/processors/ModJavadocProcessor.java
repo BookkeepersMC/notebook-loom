@@ -49,7 +49,7 @@ import net.fabricmc.loom.api.processor.ProcessorContext;
 import net.fabricmc.loom.api.processor.SpecContext;
 import net.fabricmc.loom.util.Checksum;
 import net.fabricmc.loom.util.Constants;
-import net.fabricmc.loom.util.fmj.FabricModJson;
+import net.fabricmc.loom.util.nmj.NotebookModJson;
 import net.fabricmc.mappingio.MappingReader;
 import net.fabricmc.mappingio.tree.MappingTree;
 import net.fabricmc.mappingio.tree.MemoryMappingTree;
@@ -73,8 +73,8 @@ public abstract class ModJavadocProcessor implements MinecraftJarProcessor<ModJa
 	public @Nullable ModJavadocProcessor.Spec buildSpec(SpecContext context) {
 		List<ModJavadoc> javadocs = new ArrayList<>();
 
-		for (FabricModJson fabricModJson : context.allMods()) {
-			ModJavadoc javadoc = ModJavadoc.create(fabricModJson);
+		for (NotebookModJson notebookModJson : context.allMods()) {
+			ModJavadoc javadoc = ModJavadoc.create(notebookModJson);
 
 			if (javadoc != null) {
 				javadocs.add(javadoc);
@@ -110,9 +110,9 @@ public abstract class ModJavadocProcessor implements MinecraftJarProcessor<ModJa
 
 	public record ModJavadoc(String modId, MemoryMappingTree mappingTree, String mappingsHash) {
 		@Nullable
-		public static ModJavadoc create(FabricModJson fabricModJson) {
-			final String modId = fabricModJson.getId();
-			final JsonElement customElement = fabricModJson.getCustom(Constants.CustomModJsonKeys.PROVIDED_JAVADOC);
+		public static ModJavadoc create(NotebookModJson notebookModJson) {
+			final String modId = notebookModJson.getId();
+			final JsonElement customElement = notebookModJson.getCustom(Constants.CustomModJsonKeys.PROVIDED_JAVADOC);
 
 			if (customElement == null) {
 				return null;
@@ -123,7 +123,7 @@ public abstract class ModJavadocProcessor implements MinecraftJarProcessor<ModJa
 			final String mappingsHash;
 
 			try {
-				final byte[] data = fabricModJson.getSource().read(javaDocPath);
+				final byte[] data = notebookModJson.getSource().read(javaDocPath);
 				mappingsHash = Checksum.sha1Hex(data);
 
 				try (Reader reader = new InputStreamReader(new ByteArrayInputStream(data))) {

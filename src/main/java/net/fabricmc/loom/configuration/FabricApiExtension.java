@@ -56,8 +56,8 @@ import org.w3c.dom.NodeList;
 
 import net.fabricmc.loom.LoomGradleExtension;
 import net.fabricmc.loom.util.download.DownloadException;
-import net.fabricmc.loom.util.fmj.FabricModJson;
-import net.fabricmc.loom.util.fmj.FabricModJsonFactory;
+import net.fabricmc.loom.util.nmj.NotebookModJson;
+import net.fabricmc.loom.util.nmj.NotebookModJsonFactory;
 import net.fabricmc.loom.util.gradle.SourceSetHelper;
 
 public abstract class FabricApiExtension {
@@ -159,13 +159,13 @@ public abstract class FabricApiExtension {
 
 			settings.getModId().convention(getProject().provider(() -> {
 				try {
-					final FabricModJson fabricModJson = FabricModJsonFactory.createFromSourceSetsNullable(dataGenSourceSet);
+					final NotebookModJson notebookModJson = NotebookModJsonFactory.createFromSourceSetsNullable(dataGenSourceSet);
 
-					if (fabricModJson == null) {
+					if (notebookModJson == null) {
 						throw new RuntimeException("Could not find a fabric.mod.json file in the data source set or a value for DataGenerationSettings.getModId()");
 					}
 
-					return fabricModJson.getId();
+					return notebookModJson.getId();
 				} catch (IOException e) {
 					throw new org.gradle.api.UncheckedIOException("Failed to read mod id from the datagen source set.", e);
 				}

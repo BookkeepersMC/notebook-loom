@@ -29,8 +29,8 @@ import spock.lang.Specification
 import net.fabricmc.loom.api.processor.SpecContext
 import net.fabricmc.loom.configuration.accesswidener.AccessWidenerJarProcessor
 import net.fabricmc.loom.test.util.GradleTestUtil
-import net.fabricmc.loom.util.fmj.FabricModJson
-import net.fabricmc.loom.util.fmj.ModEnvironment
+import net.fabricmc.loom.util.nmj.NotebookModJson
+import net.fabricmc.loom.util.nmj.ModEnvironment
 
 class AccessWidenerJarProcessorTest extends Specification {
 	def "Local AW"() {
@@ -53,11 +53,11 @@ class AccessWidenerJarProcessorTest extends Specification {
 		given:
 		def specContext = Mock(SpecContext)
 
-		def mod1 = Mock(FabricModJson.Mockable)
+		def mod1 = Mock(NotebookModJson.Mockable)
 		mod1.getClassTweakers() >> ["test.accesswidener": ModEnvironment.UNIVERSAL]
 		mod1.getId() >> "modid1"
 
-		def mod2 = Mock(FabricModJson.Mockable)
+		def mod2 = Mock(NotebookModJson.Mockable)
 		mod2.getClassTweakers() >> ["test2.accesswidener": ModEnvironment.UNIVERSAL]
 		mod2.getId() >> "modid2"
 

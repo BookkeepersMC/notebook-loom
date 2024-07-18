@@ -27,13 +27,13 @@ package net.fabricmc.loom.test.unit.processor
 import spock.lang.Specification
 
 import net.fabricmc.loom.configuration.accesswidener.ModAccessWidenerEntry
-import net.fabricmc.loom.util.fmj.FabricModJson
-import net.fabricmc.loom.util.fmj.ModEnvironment
+import net.fabricmc.loom.util.nmj.NotebookModJson
+import net.fabricmc.loom.util.nmj.ModEnvironment
 
 class ModAccessWidenerEntryTest extends Specification {
 	def "read local mod"() {
 		given:
-		def mod = Mock(FabricModJson.Mockable)
+		def mod = Mock(NotebookModJson.Mockable)
 		mod.getClassTweakers() >> ["test.accesswidener": ModEnvironment.UNIVERSAL]
 		mod.hashCode() >> 0
 

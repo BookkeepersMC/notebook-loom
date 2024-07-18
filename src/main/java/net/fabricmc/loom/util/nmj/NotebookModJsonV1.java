@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package net.fabricmc.loom.util.fmj;
+package net.fabricmc.loom.util.nmj;
 
-import static net.fabricmc.loom.util.fmj.FabricModJsonUtils.readString;
+import static net.fabricmc.loom.util.nmj.NotebookModJsonUtils.readString;
 
 import java.util.Collections;
 import java.util.List;
@@ -38,8 +38,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import org.jetbrains.annotations.Nullable;
 
-public final class FabricModJsonV1 extends FabricModJson {
-	FabricModJsonV1(JsonObject jsonObject, FabricModJsonSource source) {
+public final class NotebookModJsonV1 extends NotebookModJson {
+	NotebookModJsonV1(JsonObject jsonObject, NotebookModJsonSource source) {
 		super(jsonObject, source);
 	}
 
@@ -77,7 +77,7 @@ public final class FabricModJsonV1 extends FabricModJson {
 		}
 
 		return StreamSupport.stream(mixinArray.spliterator(), false)
-				.map(FabricModJsonV1::readMixinElement)
+				.map(NotebookModJsonV1::readMixinElement)
 				.collect(Collectors.toList());
 	}
 
@@ -87,7 +87,7 @@ public final class FabricModJsonV1 extends FabricModJson {
 		} else if (jsonElement instanceof JsonObject obj) {
 			return obj.get("config").getAsString();
 		} else {
-			throw new FabricModJsonUtils.ParseException("Expected mixin element to be an object or string");
+			throw new NotebookModJsonUtils.ParseException("Expected mixin element to be an object or string");
 		}
 	}
 

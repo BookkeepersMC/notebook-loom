@@ -53,7 +53,7 @@ import net.fabricmc.loom.util.LazyCloseable
 import net.fabricmc.loom.util.Pair
 import net.fabricmc.loom.util.TinyRemapperHelper
 import net.fabricmc.loom.util.ZipUtils
-import net.fabricmc.loom.util.fmj.FabricModJson
+import net.fabricmc.loom.util.nmj.NotebookModJson
 import net.fabricmc.mappingio.MappingReader
 import net.fabricmc.mappingio.tree.MemoryMappingTree
 import net.fabricmc.tinyremapper.TinyRemapper
@@ -64,7 +64,7 @@ class InterfaceInjectionProcessorTest extends Specification {
 
 	def "interface injection"() {
 		given:
-		def fmj = Mock(FabricModJson.Mockable)
+		def fmj = Mock(NotebookModJson.Mockable)
 		fmj.getId() >> "modid"
 		fmj.getCustom(Constants.CustomModJsonKeys.INJECTED_INTERFACE) >> createCustomObject(key, value)
 
