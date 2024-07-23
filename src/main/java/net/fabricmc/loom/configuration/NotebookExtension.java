@@ -60,7 +60,7 @@ import net.fabricmc.loom.util.nmj.NotebookModJson;
 import net.fabricmc.loom.util.nmj.NotebookModJsonFactory;
 import net.fabricmc.loom.util.gradle.SourceSetHelper;
 
-public abstract class FabricApiExtension {
+public abstract class NotebookExtension {
 	@Inject
 	public abstract Project getProject();
 
@@ -184,16 +184,16 @@ public abstract class FabricApiExtension {
 				run.inherit(extension.getRunConfigs().getByName("server"));
 				run.setConfigName("Data Generation");
 
-				run.property("fabric-api.datagen");
-				run.property("fabric-api.datagen.output-dir", outputDirectory.getAbsolutePath());
+				run.property("notebook.datagen");
+				run.property("notebook.datagen.output-dir", outputDirectory.getAbsolutePath());
 				run.runDir("build/datagen");
 
 				if (settings.getModId().isPresent()) {
-					run.property("fabric-api.datagen.modid", settings.getModId().get());
+					run.property("notebook.datagen.modid", settings.getModId().get());
 				}
 
 				if (settings.getStrictValidation().get()) {
-					run.property("fabric-api.datagen.strict-validation", "true");
+					run.property("notebook.datagen.strict-validation", "true");
 				}
 
 				if (settings.getCreateSourceSet().get()) {

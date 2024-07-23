@@ -38,7 +38,7 @@ class DataGenerationTest extends Specification implements GradleProjectTestTrait
 		setup:
 		def gradle = gradleProject(project: "minimalBase", version: version)
 		gradle.buildGradle << '''
-                fabricApi {
+                notebook {
                     configureDataGeneration()
                 }
 

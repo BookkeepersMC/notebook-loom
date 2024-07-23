@@ -101,8 +101,8 @@ public class Constants {
 	}
 
 	public static final class Knot {
-		public static final String KNOT_CLIENT = "net.fabricmc.loader.launch.knot.KnotClient";
-		public static final String KNOT_SERVER = "net.fabricmc.loader.launch.knot.KnotServer";
+		public static final String KNOT_CLIENT = "com.bookkeepersmc.loader.launch.knot.KnotClient";
+		public static final String KNOT_SERVER = "com.bookkeepersmc.loader.launch.knot.KnotServer";
 
 		private Knot() {
 		}
