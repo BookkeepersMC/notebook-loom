@@ -1,5 +1,5 @@
 [versions]
-spock = "2.3-groovy-3.0"
+spock = "2.3-groovy-4.0"
 junit = "5.10.2"
 javalin = "6.1.6"
 mockito = "5.12.0"
