@@ -72,9 +72,9 @@ import net.fabricmc.loom.configuration.providers.minecraft.MinecraftSourceSets;
 import net.fabricmc.loom.task.GenerateSourcesTask;
 import net.fabricmc.loom.util.DeprecationHelper;
 import net.fabricmc.loom.util.MirrorUtil;
+import net.fabricmc.loom.util.gradle.SourceSetHelper;
 import net.fabricmc.loom.util.nmj.NotebookModJson;
 import net.fabricmc.loom.util.nmj.NotebookModJsonFactory;
-import net.fabricmc.loom.util.gradle.SourceSetHelper;
 
 /**
  * This class implements the public extension api.

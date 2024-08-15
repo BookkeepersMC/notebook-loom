@@ -129,13 +129,12 @@ public class Constants {
 	}
 
 	public static final class Properties {
-		public static final String MULTI_PROJECT_OPTIMISATION = "fabric.loom.multiProjectOptimisation";
-		public static final String DONT_REMAP = "fabric.loom.dontRemap";
-		public static final String DISABLE_REMAPPED_VARIANTS = "fabric.loom.disableRemappedVariants";
-		public static final String DISABLE_PROJECT_DEPENDENT_MODS = "fabric.loom.disableProjectDependentMods";
-		public static final String LIBRARY_PROCESSORS = "fabric.loom.libraryProcessors";
+		public static final String DONT_REMAP = "notebook.loom.dontRemap";
+		public static final String DISABLE_REMAPPED_VARIANTS = "notebook.loom.disableRemappedVariants";
+		public static final String DISABLE_PROJECT_DEPENDENT_MODS = "notebook.loom.disableProjectDependentMods";
+		public static final String LIBRARY_PROCESSORS = "notebook.loom.libraryProcessors";
 		@ApiStatus.Experimental
-		public static final String SANDBOX = "fabric.loom.experimental.sandbox";
+		public static final String SANDBOX = "notebook.loom.experimental.sandbox";
 	}
 
 	public static final class Manifest {

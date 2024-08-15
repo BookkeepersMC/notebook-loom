@@ -38,8 +38,8 @@ import net.fabricmc.accesswidener.AccessWidenerVisitor;
 import net.fabricmc.accesswidener.TransitiveOnlyFilter;
 import net.fabricmc.loom.api.mappings.layered.MappingsNamespace;
 import net.fabricmc.loom.util.LazyCloseable;
-import net.fabricmc.loom.util.nmj.NotebookModJson;
 import net.fabricmc.loom.util.nmj.ModEnvironment;
+import net.fabricmc.loom.util.nmj.NotebookModJson;
 import net.fabricmc.tinyremapper.TinyRemapper;
 
 /**

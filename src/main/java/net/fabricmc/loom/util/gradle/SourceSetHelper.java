@@ -1,7 +1,7 @@
 /*
  * This file is part of fabric-loom, licensed under the MIT License (MIT).
  *
- * Copyright (c) 2022 FabricMC
+ * Copyright (c) 2022-2024 FabricMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,6 +41,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
@@ -53,6 +54,7 @@ import org.xml.sax.InputSource;
 import net.fabricmc.loom.LoomGradleExtension;
 import net.fabricmc.loom.api.ModSettings;
 import net.fabricmc.loom.configuration.ide.idea.IdeaUtils;
+import net.fabricmc.loom.util.Constants;
 
 public final class SourceSetHelper {
 	@VisibleForTesting
@@ -123,7 +125,7 @@ public final class SourceSetHelper {
 	}
 
 	public static List<File> getClasspath(SourceSetReference reference, Project project) {
-		final List<File> classpath = getGradleClasspath(reference);
+		final List<File> classpath = getGradleClasspath(reference, project);
 
 		classpath.addAll(getIdeaClasspath(reference, project));
 		classpath.addAll(getEclipseClasspath(reference, project));
@@ -132,7 +134,7 @@ public final class SourceSetHelper {
 		return classpath;
 	}
 
-	private static List<File> getGradleClasspath(SourceSetReference reference) {
+	private static List<File> getGradleClasspath(SourceSetReference reference, Project project) {
 		final SourceSetOutput output = reference.sourceSet().getOutput();
 		final File resources = output.getResourcesDir();
 
@@ -142,6 +144,15 @@ public final class SourceSetHelper {
 
 		if (resources != null) {
 			classpath.add(resources);
+		}
+
+		if (SourceSet.MAIN_SOURCE_SET_NAME.equals(reference.sourceSet().getName()) && !reference.project().getPath().equals(project.getPath())
+						&& GradleUtils.isLoomProject(reference.project())) {
+			final Configuration namedElements = reference.project().getConfigurations().getByName(Constants.Configurations.NAMED_ELEMENTS);
+
+			for (File artifact : namedElements.getOutgoing().getArtifacts().getFiles()) {
+				classpath.add(artifact);
+			}
 		}
 
 		return classpath;
@@ -241,8 +252,14 @@ public final class SourceSetHelper {
 		final LoomGradleExtension extension = LoomGradleExtension.get(project);
 
 		if (extension.isConfigurationCacheActive()) {
-			// TODO config cache, figure this out
-			project.getLogger().warn("Unable to find resource ({}) in source set ({}) when configuration cache is active", path, sourceSet.getName());
+			for (File rootDir : sourceSet.getResources().getSrcDirs()) {
+				final File file = GradleUtils.configurationInputFile(project, new File(rootDir, path));
+
+				if (file.exists()) {
+					return file;
+				}
+			}
+
 			return null;
 		}
 

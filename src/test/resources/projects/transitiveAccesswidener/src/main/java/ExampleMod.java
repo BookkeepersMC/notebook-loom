@@ -2,7 +2,7 @@ import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.util.registry.RegistryKey;
 
-import net.fabricmc.api.ModInitializer;
+import com.bookkeepersmc.api.ModInitializer;
 
 public class ExampleMod implements ModInitializer {
 	@Override

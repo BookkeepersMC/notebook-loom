@@ -47,10 +47,10 @@ import net.fabricmc.loom.LoomGradleExtension;
 import net.fabricmc.loom.api.RemapConfigurationSettings;
 import net.fabricmc.loom.api.processor.SpecContext;
 import net.fabricmc.loom.util.Constants;
+import net.fabricmc.loom.util.gradle.GradleUtils;
 import net.fabricmc.loom.util.nmj.NotebookModJson;
 import net.fabricmc.loom.util.nmj.NotebookModJsonFactory;
 import net.fabricmc.loom.util.nmj.NotebookModJsonHelpers;
-import net.fabricmc.loom.util.gradle.GradleUtils;
 
 /**
  * @param modDependencies External mods that are depended on

@@ -56,9 +56,9 @@ import org.w3c.dom.NodeList;
 
 import net.fabricmc.loom.LoomGradleExtension;
 import net.fabricmc.loom.util.download.DownloadException;
+import net.fabricmc.loom.util.gradle.SourceSetHelper;
 import net.fabricmc.loom.util.nmj.NotebookModJson;
 import net.fabricmc.loom.util.nmj.NotebookModJsonFactory;
-import net.fabricmc.loom.util.gradle.SourceSetHelper;
 
 public abstract class NotebookExtension {
 	@Inject
@@ -238,7 +238,7 @@ public abstract class NotebookExtension {
 	}
 
 	private String getDependencyNotation(String moduleName, String fabricApiVersion) {
-		return String.format("net.fabricmc.fabric-api:%s:%s", moduleName, moduleVersion(moduleName, fabricApiVersion));
+		return String.format("com.bookkeepersmc.notebook-api:%s:%s", moduleName, moduleVersion(moduleName, fabricApiVersion));
 	}
 
 	private Map<String, String> getApiModuleVersions(String fabricApiVersion) {
@@ -287,19 +287,19 @@ public abstract class NotebookExtension {
 	}
 
 	private File getApiMavenPom(String fabricApiVersion) throws PomNotFoundException {
-		return getPom("fabric-api", fabricApiVersion);
+		return getPom("notebook-api", fabricApiVersion);
 	}
 
 	private File getDeprecatedApiMavenPom(String fabricApiVersion) throws PomNotFoundException {
-		return getPom("fabric-api-deprecated", fabricApiVersion);
+		return getPom("notebook-api-deprecated", fabricApiVersion);
 	}
 
 	private File getPom(String name, String version) throws PomNotFoundException {
 		final LoomGradleExtension extension = LoomGradleExtension.get(getProject());
-		final var mavenPom = new File(extension.getFiles().getUserCache(), "fabric-api/%s-%s.pom".formatted(name, version));
+		final var mavenPom = new File(extension.getFiles().getUserCache(), "notebook-api/%s-%s.pom".formatted(name, version));
 
 		try {
-			extension.download(String.format("https://maven.fabricmc.net/net/fabricmc/fabric-api/%2$s/%1$s/%2$s-%1$s.pom", version, name))
+			extension.download(String.format("https://bookkeepersmc.github.io/m2/com/bookkeepersmc/notebook-api/%2$s/%1$s/%2$s-%1$s.pom", version, name))
 					.defaultCache()
 					.downloadPath(mavenPom.toPath());
 		} catch (DownloadException e) {

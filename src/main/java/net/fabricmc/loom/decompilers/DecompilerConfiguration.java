@@ -43,7 +43,7 @@ import net.fabricmc.loom.api.decompilers.LoomDecompiler;
 import net.fabricmc.loom.decompilers.cfr.LoomCFRDecompiler;
 import net.fabricmc.loom.decompilers.fernflower.FabricFernFlowerDecompiler;
 import net.fabricmc.loom.decompilers.vineflower.VineflowerDecompiler;
-import net.fabricmc.loom.util.LoomVersions;
+import net.fabricmc.loom.util.NotebookLoomVersions;
 import net.fabricmc.loom.util.ZipUtils;
 
 public abstract class DecompilerConfiguration implements Runnable {
@@ -52,16 +52,16 @@ public abstract class DecompilerConfiguration implements Runnable {
 
 	@Override
 	public void run() {
-		var fernflowerConfiguration = createConfiguration("fernflower", LoomVersions.FERNFLOWER);
-		var cfrConfiguration = createConfiguration("cfr", LoomVersions.CFR);
-		var vineflowerConfiguration = createConfiguration("vineflower", LoomVersions.VINEFLOWER);
+		var fernflowerConfiguration = createConfiguration("fernflower", NotebookLoomVersions.FERNFLOWER);
+		var cfrConfiguration = createConfiguration("cfr", NotebookLoomVersions.CFR);
+		var vineflowerConfiguration = createConfiguration("vineflower", NotebookLoomVersions.VINEFLOWER);
 
 		registerDecompiler(getProject(), "fernFlower", BuiltinFernflower.class, fernflowerConfiguration);
 		registerDecompiler(getProject(), "cfr", BuiltinCfr.class, cfrConfiguration);
 		registerDecompiler(getProject(), "vineflower", BuiltinVineflower.class, vineflowerConfiguration);
 	}
 
-	private NamedDomainObjectProvider<Configuration> createConfiguration(String name, LoomVersions version) {
+	private NamedDomainObjectProvider<Configuration> createConfiguration(String name, NotebookLoomVersions version) {
 		final String configurationName = name + "DecompilerClasspath";
 		NamedDomainObjectProvider<Configuration> configuration = getProject().getConfigurations().register(configurationName);
 		getProject().getDependencies().add(configurationName, version.mavenNotation());

@@ -44,8 +44,8 @@ import net.fabricmc.loom.api.processor.MinecraftJarProcessor;
 import net.fabricmc.loom.api.processor.ProcessorContext;
 import net.fabricmc.loom.api.processor.SpecContext;
 import net.fabricmc.loom.util.LazyCloseable;
-import net.fabricmc.loom.util.nmj.NotebookModJson;
 import net.fabricmc.loom.util.nmj.ModEnvironment;
+import net.fabricmc.loom.util.nmj.NotebookModJson;
 import net.fabricmc.tinyremapper.TinyRemapper;
 
 public class AccessWidenerJarProcessor implements MinecraftJarProcessor<AccessWidenerJarProcessor.Spec> {

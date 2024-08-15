@@ -46,7 +46,7 @@ import org.gradle.api.provider.Provider;
 
 import net.fabricmc.loom.LoomGradleExtension;
 import net.fabricmc.loom.util.Constants;
-import net.fabricmc.loom.util.LoomVersions;
+import net.fabricmc.loom.util.NotebookLoomVersions;
 import net.fabricmc.loom.util.gradle.SourceSetHelper;
 
 public abstract class LoomConfigurations implements Runnable {
@@ -149,10 +149,10 @@ public abstract class LoomConfigurations implements Runnable {
 		extendsFrom(JavaPlugin.RUNTIME_CLASSPATH_CONFIGURATION_NAME, Constants.Configurations.MINECRAFT_RUNTIME_LIBRARIES);
 
 		// Add the dev time dependencies
-		getDependencies().add(Constants.Configurations.LOOM_DEVELOPMENT_DEPENDENCIES, LoomVersions.DEV_LAUNCH_INJECTOR.mavenNotation());
-		getDependencies().add(Constants.Configurations.LOOM_DEVELOPMENT_DEPENDENCIES, LoomVersions.TERMINAL_CONSOLE_APPENDER.mavenNotation());
-		getDependencies().add(JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, LoomVersions.JETBRAINS_ANNOTATIONS.mavenNotation());
-		getDependencies().add(JavaPlugin.TEST_COMPILE_ONLY_CONFIGURATION_NAME, LoomVersions.JETBRAINS_ANNOTATIONS.mavenNotation());
+		getDependencies().add(Constants.Configurations.LOOM_DEVELOPMENT_DEPENDENCIES, NotebookLoomVersions.DEV_LAUNCH_INJECTOR.mavenNotation());
+		getDependencies().add(Constants.Configurations.LOOM_DEVELOPMENT_DEPENDENCIES, NotebookLoomVersions.TERMINAL_CONSOLE_APPENDER.mavenNotation());
+		getDependencies().add(JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, NotebookLoomVersions.JETBRAINS_ANNOTATIONS.mavenNotation());
+		getDependencies().add(JavaPlugin.TEST_COMPILE_ONLY_CONFIGURATION_NAME, NotebookLoomVersions.JETBRAINS_ANNOTATIONS.mavenNotation());
 	}
 
 	private NamedDomainObjectProvider<Configuration> register(String name, Role role) {

@@ -24,9 +24,11 @@
 
 package net.fabricmc.loom.util.gradle;
 
+import java.io.File;
 import java.util.function.Consumer;
 
 import org.gradle.api.Project;
+import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.invocation.Gradle;
 import org.gradle.api.provider.Provider;
 
@@ -77,5 +79,11 @@ public final class GradleUtils {
 
 	public static boolean getBooleanProperty(Project project, String key) {
 		return getBooleanPropertyProvider(project, key).getOrElse(false);
+	}
+
+	public static File configurationInputFile(Project project, File file) {
+		final RegularFileProperty property = project.getObjects().fileProperty();
+		property.set(file);
+		return property.getAsFile().get();
 	}
 }
