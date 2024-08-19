@@ -372,7 +372,7 @@ tasks.withType(GenerateModuleMetadata).configureEach {
 tasks.register('writeActionsTestMatrix') {
 	doLast {
 		def testMatrix = []
-		file('src/test/groovy/net/fabricmc/loom/test/integration').eachFile {
+		file('src/test/groovy/com/bookkeepersmc/loom/test/integration').eachFile {
 			if (it.name.endsWith("Test.groovy")) {
 				if (it.name.endsWith("ReproducibleBuildTest.groovy")) {
 					// This test gets a special case to run across all os's
@@ -385,15 +385,15 @@ tasks.register('writeActionsTestMatrix') {
 				}
 
 				def className = it.name.replace(".groovy", "")
-				testMatrix.add("net.fabricmc.loom.test.integration.${className}")
+				testMatrix.add("com.bookkeepersmc.loom.test.integration.${className}")
 			}
 		}
 
 		// Run all the unit tests together
-		testMatrix.add("net.fabricmc.loom.test.unit.*")
+		testMatrix.add("com.bookkeepersmc.loom.test.unit.*")
 
 		// Kotlin tests
-		testMatrix.add("net.fabricmc.loom.test.kotlin.*")
+		testMatrix.add("com.bookkeepersmc.loom.test.kotlin.*")
 
 		def json = groovy.json.JsonOutput.toJson(testMatrix)
 		def output = file("build/test_matrix.json")
