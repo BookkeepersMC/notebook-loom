@@ -18,7 +18,6 @@ import java.io.StringWriter
 import java.nio.file.Paths
 
 class KotlinClassMetadataRemappingAnnotationVisitorTest {
-
     @Test
     fun simpleTest() {
         val inputPosInChunk = getClassBytes("PosInChunk")
