@@ -117,29 +117,3 @@ jobs:
         with:
           name: ${{ steps.test.outputs.test }} Heap Dump (Windows)
           path: "*.hprof"
-
-  # Special case this test to run across all os's
-  reproducible_build_test:
-    needs: build
-
-    strategy:
-      fail-fast: false
-      matrix:
-        java: [ 17, 21 ]
-        os: [ windows-2022, ubuntu-24.04, macos-14 ]
-
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
-        with:
-          java-version: ${{ matrix.java }}
-          distribution: 'temurin'
-
-      - run: ./gradlew test --tests *ReproducibleBuildTest --stacktrace --warning-mode fail
-
-      - uses: actions/upload-artifact@v4
-        if: ${{ failure() }}
-        with:
-          name: Reproducible Build ${{ matrix.os }} (${{ matrix.java }}) Results
-          path: build/reports/
