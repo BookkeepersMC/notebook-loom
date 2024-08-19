@@ -1,8 +1,8 @@
 [versions]
 kotlin = "1.9.24"
 asm = "9.6"
-commons-io = "2.15.1"
-gson = "2.10.1"
+commons-io = "2.16.1"
+gson = "2.11.0"
 guava = "33.2.1-jre"
 
 stitch = "0.6.2"
@@ -16,7 +16,7 @@ loom-native = "0.2.1"
 
 # Plugins
 spotless = "6.25.0"
-test-retry = "1.5.6"
+test-retry = "1.5.10"
 checkstyle = "10.17.0"
 codenarc = "3.4.0"
 

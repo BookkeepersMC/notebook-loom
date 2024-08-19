@@ -24,8 +24,9 @@
 
 package com.bookkeepersmc.loom.test
 
-import net.fabricmc.loom.test.LoomTestVersions
 import org.gradle.util.GradleVersion
+
+import net.fabricmc.loom.test.LoomTestVersions
 
 class LoomTestConstants {
 	private final static String NIGHTLY_VERSION = LoomTestVersions.GRADLE_NIGHTLY.version()

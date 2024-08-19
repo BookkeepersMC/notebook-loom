@@ -24,10 +24,10 @@
 
 package com.bookkeepersmc.loom.test.integration
 
+import com.bookkeepersmc.loom.test.util.GradleProjectTestTrait
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import com.bookkeepersmc.loom.test.util.GradleProjectTestTrait
 import net.fabricmc.loom.util.ZipUtils
 
 import static com.bookkeepersmc.loom.test.LoomTestConstants.*

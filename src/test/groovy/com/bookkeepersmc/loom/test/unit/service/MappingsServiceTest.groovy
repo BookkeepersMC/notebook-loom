@@ -1,7 +1,7 @@
 /*
  * This file is part of fabric-loom, licensed under the MIT License (MIT).
  *
- * Copyright (c) 2023 FabricMC
+ * Copyright (c) 2024 FabricMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,35 +22,38 @@
  * SOFTWARE.
  */
 
-package com.bookkeepersmc.loom.test.util
+package com.bookkeepersmc.loom.test.unit.service
 
-import java.time.Duration
+import com.bookkeepersmc.loom.test.util.GradleTestUtil
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.Property
 
-import com.bookkeepersmc.loom.test.LoomTestConstants
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
+import net.fabricmc.loom.task.service.NewMappingsService
 
-import net.fabricmc.loom.configuration.providers.minecraft.MinecraftVersionMeta
-import net.fabricmc.loom.configuration.providers.minecraft.VersionsManifest
-import net.fabricmc.loom.util.Constants
-import net.fabricmc.loom.util.download.Download
+class MappingsServiceTest extends ServiceTestBase {
+	def "get mapping tree"() {
+		given:
+		NewMappingsService service = factory.get(new TestOptions(
+				mappingsFile: GradleTestUtil.mockRegularFileProperty(new File("src/test/resources/mappings/PosInChunk.mappings")),
+				from: GradleTestUtil.mockProperty("intermediary"),
+				to: GradleTestUtil.mockProperty("named"),
+				))
 
-class MinecraftTestUtils {
-	private static final File TEST_DIR = new File(LoomTestConstants.TEST_DIR, "minecraft")
-	public static final Gson GSON = new GsonBuilder().create()
+		when:
+		def mappingTree = service.memoryMappingTree
 
-	static MinecraftVersionMeta getVersionMeta(String id) {
-		def versionManifest = download(Constants.VERSION_MANIFESTS, "version_manifest.json")
-		def manifest = GSON.fromJson(versionManifest, VersionsManifest.class)
-		def version = manifest.versions().find { it.id == id }
+		then:
+		mappingTree.getClasses().size() == 2
 
-		def metaJson = download(version.url, "${id}.json")
-		GSON.fromJson(metaJson, MinecraftVersionMeta.class)
+		service.from == "intermediary"
+		service.to == "named"
 	}
 
-	static String download(String url, String name) {
-		Download.create(url)
-				.maxAge(Duration.ofDays(31))
-				.downloadString(new File(TEST_DIR, name).toPath())
+	static class TestOptions implements NewMappingsService.Options {
+		RegularFileProperty mappingsFile
+		Property<String> from
+		Property<String> to
+		Property<Boolean> remapLocals = GradleTestUtil.mockProperty(false)
+		Property<String> serviceClass = serviceClassProperty(NewMappingsService.TYPE)
 	}
 }

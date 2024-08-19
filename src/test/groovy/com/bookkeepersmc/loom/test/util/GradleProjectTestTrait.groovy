@@ -24,6 +24,7 @@
 
 package com.bookkeepersmc.loom.test.util
 
+import com.bookkeepersmc.loom.test.LoomTestConstants
 import groovy.io.FileType
 import groovy.transform.Immutable
 import org.apache.commons.io.FileUtils
@@ -32,7 +33,6 @@ import org.gradle.testkit.runner.GradleRunner
 import org.gradle.util.GradleVersion
 import spock.lang.Shared
 
-import com.bookkeepersmc.loom.test.LoomTestConstants
 import net.fabricmc.loom.util.ZipUtils
 
 trait GradleProjectTestTrait {
@@ -278,7 +278,7 @@ trait GradleProjectTestTrait {
 			def buildSrcDir = new File(projectDir, "buildSrc")
 			buildSrcDir.mkdirs()
 
-			def pluginClass = "net.fabricmc.loom.test.integration.buildSrc.${name}.TestPlugin"
+			def pluginClass = "com.bookkeepersmc.loom.test.integration.buildSrc.${name}.TestPlugin"
 			new File(buildSrcDir, "build.gradle") << """
                 plugins {
                     id 'groovy-gradle-plugin'
@@ -313,8 +313,8 @@ trait GradleProjectTestTrait {
 
 			buildGradle.text = buildGradle.text.replaceAll("(?s)(plugins \\{.*?})", pluginBlock)
 
-			def sourceSrc = new File("src/test/groovy/net/fabricmc/loom/test/integration/buildSrc/" + name)
-			def targetSrc = new File(buildSrcDir, "src/main/groovy/net/fabricmc/loom/test/integration/buildSrc/" + name)
+			def sourceSrc = new File("src/test/groovy/com/bookkeepersmc/loom/test/integration/buildSrc/" + name)
+			def targetSrc = new File(buildSrcDir, "src/main/groovy/com/bookkeepersmc/loom/test/integration/buildSrc/" + name)
 
 			FileUtils.copyDirectory(sourceSrc, targetSrc)
 		}
