@@ -26,14 +26,8 @@ package net.fabricmc.loom.task.service;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
-import net.fabricmc.loom.util.newService.Service;
-
-import net.fabricmc.loom.util.newService.ServiceFactory;
-import net.fabricmc.loom.util.newService.ServiceType;
 
 import org.cadixdev.mercury.Mercury;
 import org.cadixdev.mercury.remapper.MercuryRemapper;
@@ -51,6 +45,9 @@ import net.fabricmc.loom.util.DeletingFileVisitor;
 import net.fabricmc.loom.util.FileSystemUtil;
 import net.fabricmc.loom.util.SourceRemapper;
 import net.fabricmc.loom.util.ZipUtils;
+import net.fabricmc.loom.util.newService.Service;
+import net.fabricmc.loom.util.newService.ServiceFactory;
+import net.fabricmc.loom.util.newService.ServiceType;
 import net.fabricmc.lorenztiny.TinyMappingsReader;
 
 public final class SourceRemapperService extends Service<SourceRemapperService.Options> {
@@ -112,6 +109,7 @@ public final class SourceRemapperService extends Service<SourceRemapperService.O
 			} catch (Exception e) {
 				LOGGER.warn("Could not remap {} fully!", source, e);
 			}
+
 			SourceRemapper.copyNonJavaFiles(srcPath, dstPath, LOGGER, source);
 		} finally {
 			if (isSrcTmp) {
