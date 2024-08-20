@@ -74,6 +74,11 @@ public class GradleTypeAdapter implements TypeAdapterFactory {
 
 		@Override
 		public void write(JsonWriter out, T property) throws IOException {
+			if (!property.isPresent()) {
+				out.nullValue();
+				return;
+			}
+
 			final Object o = property.get();
 			final TypeAdapter adapter = gson.getAdapter(o.getClass());
 			adapter.write(out, o);
@@ -101,6 +106,11 @@ public class GradleTypeAdapter implements TypeAdapterFactory {
 	private static final class RegularFilePropertyTypeAdapter<T extends RegularFileProperty> extends WriteOnlyTypeAdapter<T> {
 		@Override
 		public void write(JsonWriter out, T property) throws IOException {
+			if (!property.isPresent()) {
+				out.nullValue();
+				return;
+			}
+
 			final File file = property.get().getAsFile();
 			out.value(file.getAbsolutePath());
 		}

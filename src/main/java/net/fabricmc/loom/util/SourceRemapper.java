@@ -51,19 +51,19 @@ import net.fabricmc.loom.api.RemapConfigurationSettings;
 import net.fabricmc.loom.api.mappings.layered.MappingsNamespace;
 import net.fabricmc.loom.configuration.providers.mappings.MappingConfiguration;
 import net.fabricmc.loom.task.service.LorenzMappingService;
-import net.fabricmc.loom.util.service.SharedServiceManager;
+import net.fabricmc.loom.util.service.ServiceFactory;
 
 public class SourceRemapper {
 	private final Project project;
-	private final SharedServiceManager serviceManager;
+	private final ServiceFactory serviceFactory;
 	private final boolean toNamed;
 	private final List<Consumer<ProgressLogger>> remapTasks = new ArrayList<>();
 
 	private Mercury mercury;
 
-	public SourceRemapper(Project project, SharedServiceManager serviceManager, boolean toNamed) {
+	public SourceRemapper(Project project, ServiceFactory serviceFactory, boolean toNamed) {
 		this.project = project;
-		this.serviceManager = serviceManager;
+		this.serviceFactory = serviceFactory;
 		this.toNamed = toNamed;
 	}
 
@@ -128,7 +128,7 @@ public class SourceRemapper {
 		if (!source.isDirectory()) {
 			// create tmp directory
 			isSrcTmp = true;
-			srcPath = Files.createTempDirectory("notebook-loom-src");
+			srcPath = Files.createTempDirectory("fabric-loom-src");
 			ZipUtils.unpackAll(source.toPath(), srcPath);
 		}
 
@@ -166,11 +166,12 @@ public class SourceRemapper {
 		LoomGradleExtension extension = LoomGradleExtension.get(project);
 		MappingConfiguration mappingConfiguration = extension.getMappingConfiguration();
 
-		MappingSet mappings = LorenzMappingService.create(serviceManager,
-															mappingConfiguration,
-															toNamed ? MappingsNamespace.INTERMEDIARY : MappingsNamespace.NAMED,
-															toNamed ? MappingsNamespace.NAMED : MappingsNamespace.INTERMEDIARY
-		).mappings();
+		LorenzMappingService lorenzMappingService = serviceFactory.get(LorenzMappingService.createOptions(
+				project,
+				mappingConfiguration,
+				toNamed ? MappingsNamespace.INTERMEDIARY : MappingsNamespace.NAMED,
+				toNamed ? MappingsNamespace.NAMED : MappingsNamespace.INTERMEDIARY));
+		MappingSet mappings = lorenzMappingService.getMappings();
 
 		Mercury mercury = createMercuryWithClassPath(project, toNamed);
 		mercury.setSourceCompatibilityFromRelease(getJavaCompileRelease(project));

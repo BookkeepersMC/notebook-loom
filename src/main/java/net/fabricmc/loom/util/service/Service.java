@@ -1,7 +1,7 @@
 /*
  * This file is part of fabric-loom, licensed under the MIT License (MIT).
  *
- * Copyright (c) 2022 FabricMC
+ * Copyright (c) 2024 FabricMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,11 +24,33 @@
 
 package net.fabricmc.loom.util.service;
 
-import java.io.Closeable;
-import java.io.IOException;
+import org.gradle.api.provider.Property;
+import org.gradle.api.tasks.Input;
+import org.jetbrains.annotations.ApiStatus;
 
-public interface SharedService extends Closeable {
-	@Override
-	default void close() throws IOException {
+public abstract class Service<O extends Service.Options> {
+	private final O options;
+	private final ServiceFactory serviceFactory;
+
+	public Service(O options, ServiceFactory serviceFactory) {
+		this.options = options;
+		this.serviceFactory = serviceFactory;
+	}
+
+	protected final O getOptions() {
+		return options;
+	}
+
+	protected ServiceFactory getServiceFactory() {
+		return serviceFactory;
+	}
+
+	/**
+	 * The base type of options class for a service.
+	 */
+	public interface Options {
+		@Input
+		@ApiStatus.Internal
+		Property<String> getServiceClass();
 	}
 }

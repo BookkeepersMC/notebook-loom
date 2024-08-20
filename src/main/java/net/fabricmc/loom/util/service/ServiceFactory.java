@@ -22,20 +22,22 @@
  * SOFTWARE.
  */
 
-package net.fabricmc.loom.util.newService;
+package net.fabricmc.loom.util.service;
 
-import org.gradle.api.Action;
-import org.gradle.api.Project;
 import org.gradle.api.provider.Provider;
 
-public record ServiceType<O extends Service.Options, S extends Service<O>>(Class<O> optionsClass, Class<S> serviceClass) {
-	public Provider<O> create(Project project, Action<O> action) {
-		return project.provider(() -> {
-			O options = project.getObjects().newInstance(optionsClass);
-			options.getServiceClass().set(serviceClass.getName());
-			options.getServiceClass().finalizeValue();
-			action.execute(options);
-			return options;
-		});
+public interface ServiceFactory {
+	default <O extends Service.Options, S extends Service<O>> S get(Provider<O> options) {
+		return get(options.get());
 	}
+
+	default <O extends Service.Options, S extends Service<O>> S getOrNull(Provider<O> options) {
+		if (options.isPresent()) {
+			return get(options);
+		} else {
+			return null;
+		}
+	}
+
+	<O extends Service.Options, S extends Service<O>> S get(O options);
 }
