@@ -40,6 +40,10 @@ import java.util.jar.Manifest;
 import javax.inject.Inject;
 
 import com.google.common.base.Preconditions;
+
+import net.fabricmc.loom.task.service.ClientEntriesService;
+import net.fabricmc.loom.util.service.ScopedServiceFactory;
+
 import org.gradle.api.Action;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.RegularFileProperty;
@@ -51,6 +55,7 @@ import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Internal;
+import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.bundling.ZipEntryCompression;
@@ -86,9 +91,6 @@ public abstract class AbstractRemapJarTask extends Jar {
 	@Inject
 	protected abstract WorkerExecutor getWorkerExecutor();
 
-	@Inject
-	protected abstract BuildEventsListenerRegistry getBuildEventsListenerRegistry();
-
 	@Input
 	public abstract Property<Boolean> getIncludesClientOnlyClasses();
 
@@ -104,6 +106,10 @@ public abstract class AbstractRemapJarTask extends Jar {
 	@ApiStatus.Internal
 	public abstract Property<String> getJarType();
 
+	@Nested
+	@Optional
+	protected abstract Property<ClientEntriesService.Options> getClientEntriesServiceOptions();
+
 	private final Provider<JarManifestService> jarManifestServiceProvider;
 
 	@Inject
@@ -112,6 +118,14 @@ public abstract class AbstractRemapJarTask extends Jar {
 		getTargetNamespace().convention(MappingsNamespace.INTERMEDIARY.toString()).finalizeValueOnRead();
 		getIncludesClientOnlyClasses().convention(false).finalizeValueOnRead();
 		getJarType().finalizeValueOnRead();
+
+		getClientEntriesServiceOptions().set(getIncludesClientOnlyClasses().flatMap(clientOnlyEntries -> {
+			if (clientOnlyEntries) {
+				return getClientOnlyEntriesOptionsProvider(getClientSourceSet());
+			}
+
+			return getProject().getObjects().property(ClientEntriesService.Options.class);
+		}));
 
 		jarManifestServiceProvider = JarManifestService.get(getProject());
 		usesService(jarManifestServiceProvider);
@@ -134,7 +148,14 @@ public abstract class AbstractRemapJarTask extends Jar {
 			params.getEntryCompression().set(getEntryCompression());
 
 			if (getIncludesClientOnlyClasses().get()) {
-				final List<String> clientOnlyEntries = new ArrayList<>(getClientOnlyEntries(getClientSourceSet()));
+				final List<String> clientOnlyEntries;
+
+				try (var serviceFactory = new ScopedServiceFactory()) {
+					ClientEntriesService<ClientEntriesService.Options> service = serviceFactory.get(getClientEntriesServiceOptions());
+					clientOnlyEntries = new ArrayList<>(service.getClientOnlyEntries());
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
 				clientOnlyEntries.addAll(getAdditionalClientOnlyEntries().get());
 				Collections.sort(clientOnlyEntries);
 				applyClientOnlyManifestAttributes(params, clientOnlyEntries);
@@ -149,7 +170,7 @@ public abstract class AbstractRemapJarTask extends Jar {
 		});
 	}
 
-	protected abstract List<String> getClientOnlyEntries(SourceSet sourceSet);
+	protected abstract Provider<? extends ClientEntriesService.Options> getClientOnlyEntriesOptionsProvider(SourceSet clientSourceSet);
 
 	public interface AbstractRemapParams extends WorkParameters {
 		RegularFileProperty getInputFile();
@@ -227,33 +248,6 @@ public abstract class AbstractRemapJarTask extends Jar {
 	@InputFile
 	public RegularFileProperty getInput() {
 		return getInputFile();
-	}
-
-	public static List<String> getRootPaths(Set<File> files) {
-		return files.stream()
-				.map(root -> {
-					String rootPath = root.getAbsolutePath().replace("\\", "/");
-
-					if (rootPath.charAt(rootPath.length() - 1) != '/') {
-						rootPath += '/';
-					}
-
-					return rootPath;
-				}).toList();
-	}
-
-	public static Function<File, String> relativePath(List<String> rootPaths) {
-		return file -> {
-			String s = file.getAbsolutePath().replace("\\", "/");
-
-			for (String rootPath : rootPaths) {
-				if (s.startsWith(rootPath)) {
-					s = s.substring(rootPath.length());
-				}
-			}
-
-			return s;
-		};
 	}
 
 	@ApiStatus.Internal

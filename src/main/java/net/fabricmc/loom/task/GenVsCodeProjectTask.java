@@ -46,12 +46,19 @@ import net.fabricmc.loom.configuration.ide.RunConfig;
 import net.fabricmc.loom.configuration.ide.RunConfigSettings;
 import net.fabricmc.loom.util.gradle.SyncTaskBuildService;
 
+import javax.inject.Inject;
+
 // Recommended vscode plugin pack:
 // https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack
 public abstract class GenVsCodeProjectTask extends AbstractLoomTask {
 	// Prevent Gradle from running vscode task asynchronously
 	@ServiceReference(SyncTaskBuildService.NAME)
 	abstract Property<SyncTaskBuildService> getSyncTask();
+
+	@Inject
+	public GenVsCodeProjectTask() {
+		notCompatibleWithConfigurationCache("Not supported yet.");
+	}
 
 	@TaskAction
 	public void genRuns() throws IOException {

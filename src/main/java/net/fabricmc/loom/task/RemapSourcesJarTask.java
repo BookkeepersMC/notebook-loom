@@ -66,10 +66,8 @@ public abstract class RemapSourcesJarTask extends AbstractRemapJarTask {
 	}
 
 	@Override
-	protected List<String> getClientOnlyEntries(SourceSet clientSourceSet) {
-		return clientSourceSet.getAllSource().getFiles().stream()
-				.map(relativePath(getRootPaths(clientSourceSet.getAllSource().getSrcDirs())))
-				.toList();
+	protected Provider<? extends ClientEntriesService.Options> getClientOnlyEntriesOptionsProvider(SourceSet clientSourceSet) {
+		return ClientEntriesService.Source.createOptions(getProject(), clientSourceSet);
 	}
 
 	public interface RemapSourcesParams extends AbstractRemapParams {

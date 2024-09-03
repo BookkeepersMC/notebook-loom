@@ -39,14 +39,6 @@ public class IdeaUtils {
 		return Objects.requireNonNull(System.getProperty("idea.version"), "Could not get idea version");
 	}
 
-	// 2021.3 or newer
-	public static boolean supportsCustomizableClasspath() {
-		final String[] split = getIdeaVersion().split("\\.");
-		final int major = Integer.parseInt(split[0]);
-		final int minor = Integer.parseInt(split[1]);
-		return major > 2021 || (major == 2021 && minor >= 3);
-	}
-
 	public static String getIdeaModuleName(SourceSetReference reference) {
 		Project project = reference.project();
 		String module = project.getName() + "." + reference.sourceSet().getName();

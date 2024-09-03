@@ -313,18 +313,7 @@ public abstract class RemapJarTask extends AbstractRemapJarTask {
 	}
 
 	@Override
-	protected List<String> getClientOnlyEntries(SourceSet clientSourceSet) {
-		final ConfigurableFileCollection output = getProject().getObjects().fileCollection();
-		output.from(clientSourceSet.getOutput().getClassesDirs());
-		output.from(clientSourceSet.getOutput().getResourcesDir());
-
-		final List<String> rootPaths = new ArrayList<>();
-
-		rootPaths.addAll(getRootPaths(clientSourceSet.getOutput().getClassesDirs().getFiles()));
-		rootPaths.addAll(getRootPaths(Set.of(Objects.requireNonNull(clientSourceSet.getOutput().getResourcesDir()))));
-
-		return output.getAsFileTree().getFiles().stream()
-				.map(relativePath(rootPaths))
-				.toList();
+	protected Provider<? extends ClientEntriesService.Options> getClientOnlyEntriesOptionsProvider(SourceSet clientSourceSet) {
+		return ClientEntriesService.Classes.createOptions(getProject(), clientSourceSet);
 	}
 }
