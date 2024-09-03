@@ -32,8 +32,8 @@ public interface VersionsManifestsAPI {
 	 * Adds a URL to a versions manifest json with the default priority of {@code 0}.
 	 * @param url the String-representation of the URL to the manifest json
 	 */
-	default void add(String url) {
-		add(url, 0);
+	default void add(String url, String name) {
+		add(name, url, 0);
 	}
 
 	/**
@@ -42,5 +42,5 @@ public interface VersionsManifestsAPI {
 	 * @param priority the priority with which this URL gets sorted against other entries
 	 *        entries are sorted by priority, from lowest to highest
 	 */
-	void add(String url, int priority);
+	void add(String name, String url, int priority);
 }

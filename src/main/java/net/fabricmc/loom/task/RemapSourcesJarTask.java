@@ -31,8 +31,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import net.fabricmc.loom.task.service.ClientEntriesService;
+
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.provider.Property;
+import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskAction;

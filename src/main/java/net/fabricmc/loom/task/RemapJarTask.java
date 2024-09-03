@@ -37,12 +37,16 @@ import java.util.stream.Stream;
 import javax.inject.Inject;
 
 import com.google.gson.JsonObject;
+
+import net.fabricmc.loom.task.service.ClientEntriesService;
+
 import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
+import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Nested;
