@@ -26,24 +26,17 @@ package net.fabricmc.loom.task;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
 import java.util.jar.Manifest;
 
 import javax.inject.Inject;
 
 import com.google.common.base.Preconditions;
-
-import net.fabricmc.loom.task.service.ClientEntriesService;
-import net.fabricmc.loom.util.service.ScopedServiceFactory;
-
 import org.gradle.api.Action;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.RegularFileProperty;
@@ -54,12 +47,10 @@ import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.InputFiles;
-import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.bundling.ZipEntryCompression;
-import org.gradle.build.event.BuildEventsListenerRegistry;
 import org.gradle.jvm.tasks.Jar;
 import org.gradle.workers.WorkAction;
 import org.gradle.workers.WorkParameters;
@@ -69,11 +60,13 @@ import org.jetbrains.annotations.ApiStatus;
 
 import net.fabricmc.loom.LoomGradleExtension;
 import net.fabricmc.loom.api.mappings.layered.MappingsNamespace;
+import net.fabricmc.loom.task.service.ClientEntriesService;
 import net.fabricmc.loom.task.service.JarManifestService;
 import net.fabricmc.loom.util.Constants;
 import net.fabricmc.loom.util.ZipReprocessorUtil;
 import net.fabricmc.loom.util.ZipUtils;
 import net.fabricmc.loom.util.gradle.SourceSetHelper;
+import net.fabricmc.loom.util.service.ScopedServiceFactory;
 
 public abstract class AbstractRemapJarTask extends Jar {
 	@InputFile
@@ -156,6 +149,7 @@ public abstract class AbstractRemapJarTask extends Jar {
 				} catch (IOException e) {
 					throw new RuntimeException(e);
 				}
+
 				clientOnlyEntries.addAll(getAdditionalClientOnlyEntries().get());
 				Collections.sort(clientOnlyEntries);
 				applyClientOnlyManifestAttributes(params, clientOnlyEntries);
@@ -248,12 +242,6 @@ public abstract class AbstractRemapJarTask extends Jar {
 	@InputFile
 	public RegularFileProperty getInput() {
 		return getInputFile();
-	}
-
-	@ApiStatus.Internal
-	@Internal
-	protected LoomGradleExtension getLoomExtension() {
-		return LoomGradleExtension.get(getProject());
 	}
 
 	private SourceSet getClientSourceSet() {

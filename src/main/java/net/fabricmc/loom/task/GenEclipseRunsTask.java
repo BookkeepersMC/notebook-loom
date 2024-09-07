@@ -33,7 +33,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
+import javax.inject.Inject;
+
 import org.gradle.api.Project;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
@@ -47,8 +48,7 @@ import org.gradle.plugins.ide.eclipse.model.EclipseModel;
 import net.fabricmc.loom.LoomGradleExtension;
 import net.fabricmc.loom.configuration.ide.RunConfig;
 import net.fabricmc.loom.configuration.ide.RunConfigSettings;
-
-import javax.inject.Inject;
+import net.fabricmc.loom.util.Constants;
 
 public abstract class GenEclipseRunsTask extends AbstractLoomTask {
 	@Nested
@@ -56,6 +56,7 @@ public abstract class GenEclipseRunsTask extends AbstractLoomTask {
 
 	@Inject
 	public GenEclipseRunsTask() {
+		setGroup(Constants.TaskGroup.IDE);
 		getEclipseRunConfigs().set(getProject().provider(() -> getRunConfigs(getProject())));
 	}
 

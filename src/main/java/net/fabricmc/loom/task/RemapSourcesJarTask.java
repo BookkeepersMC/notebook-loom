@@ -27,11 +27,8 @@ package net.fabricmc.loom.task;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.List;
 
 import javax.inject.Inject;
-
-import net.fabricmc.loom.task.service.ClientEntriesService;
 
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.provider.Property;
@@ -42,6 +39,7 @@ import org.gradle.api.tasks.TaskAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.fabricmc.loom.task.service.ClientEntriesService;
 import net.fabricmc.loom.task.service.SourceRemapperService;
 import net.fabricmc.loom.util.service.ScopedServiceFactory;
 

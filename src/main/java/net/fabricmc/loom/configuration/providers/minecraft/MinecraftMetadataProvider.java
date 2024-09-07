@@ -161,7 +161,6 @@ public final class MinecraftMetadataProvider {
 	}
 
 	private String getVersionMetaFileName() {
-
 		// custom version metadata
 		if (versionEntry.manifest == null) {
 			return "minecraft_info_" + Integer.toHexString(versionEntry.entry.url.hashCode()) + ".json";

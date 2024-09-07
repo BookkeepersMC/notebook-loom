@@ -33,9 +33,6 @@ import java.nio.file.StandardCopyOption;
 import javax.inject.Inject;
 
 import com.google.common.net.UrlEscapers;
-
-import net.fabricmc.loom.util.Checksum;
-
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
@@ -51,6 +48,7 @@ import org.slf4j.LoggerFactory;
 
 import net.fabricmc.loom.api.mappings.intermediate.IntermediateMappingsProvider;
 import net.fabricmc.loom.extension.LoomGradleExtensionApiImpl;
+import net.fabricmc.loom.util.Checksum;
 
 @ApiStatus.Internal
 public abstract class IntermediaryMappingsProvider extends IntermediateMappingsProviderInternal {

@@ -41,7 +41,6 @@ import org.gradle.api.tasks.SourceSet;
 
 import net.fabricmc.loom.LoomGradleExtension;
 import net.fabricmc.loom.extension.MixinExtension;
-import net.fabricmc.loom.task.AbstractRemapJarTask;
 import net.fabricmc.loom.task.RemapJarTask;
 import net.fabricmc.loom.util.ZipUtils;
 import net.fabricmc.loom.util.nmj.NotebookModJson;

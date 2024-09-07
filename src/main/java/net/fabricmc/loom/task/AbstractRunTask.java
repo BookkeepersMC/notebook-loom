@@ -49,13 +49,12 @@ import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.JavaExec;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.fabricmc.loom.configuration.ide.RunConfig;
 import net.fabricmc.loom.util.Constants;
 import net.fabricmc.loom.util.gradle.SyncTaskBuildService;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class AbstractRunTask extends JavaExec {
 	private static final CharsetEncoder ASCII_ENCODER = StandardCharsets.US_ASCII.newEncoder();
@@ -229,10 +228,8 @@ public abstract class AbstractRunTask extends JavaExec {
 	}
 
 	public record LibraryFilter(List<String> excludedLibraryPaths, String configName) implements Spec<File> {
-
 		@Override
 		public boolean isSatisfiedBy(File element) {
-
 			if (excludedLibraryPaths.contains(element.getAbsolutePath())) {
 				LOGGER.debug("Excluding library {} from {} run config", element.getName(), configName);
 				return false;

@@ -35,6 +35,7 @@ import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
@@ -54,6 +55,8 @@ public class GradleTypeAdapter implements TypeAdapterFactory {
 			return new FileCollectionTypeAdapter();
 		} else if (RegularFileProperty.class.isAssignableFrom(rawClass)) {
 			return new RegularFilePropertyTypeAdapter();
+		} else if (DirectoryProperty.class.isAssignableFrom(rawClass)) {
+			return new DirectoryPropertyTypeAdapter();
 		} else if (ListProperty.class.isAssignableFrom(rawClass)) {
 			return new ListPropertyTypeAdapter(gson);
 		} else if (MapProperty.class.isAssignableFrom(rawClass)) {
@@ -113,6 +116,19 @@ public class GradleTypeAdapter implements TypeAdapterFactory {
 
 			final File file = property.get().getAsFile();
 			out.value(file.getAbsolutePath());
+		}
+	}
+
+	private static final class DirectoryPropertyTypeAdapter<T extends DirectoryProperty> extends WriteOnlyTypeAdapter<T> {
+		@Override
+		public void write(JsonWriter jsonWriter, T t) throws IOException {
+			if (!t.isPresent()) {
+				jsonWriter.nullValue();
+				return;
+			}
+
+			final File file = t.get().getAsFile();
+			jsonWriter.value(file.getAbsolutePath());
 		}
 	}
 

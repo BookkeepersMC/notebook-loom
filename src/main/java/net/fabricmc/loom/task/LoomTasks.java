@@ -113,7 +113,6 @@ public abstract class LoomTasks implements Runnable {
 	}
 
 	private void registerIDETasks() {
-
 		getTasks().register("genEclipseRuns", GenEclipseRunsTask.class, t -> {
 			t.setDescription("Generates Eclipse run configurations for this project.");
 			t.dependsOn(getIDELaunchConfigureTaskName(getProject()));

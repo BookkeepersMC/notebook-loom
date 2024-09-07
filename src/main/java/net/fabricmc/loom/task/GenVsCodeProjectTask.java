@@ -36,6 +36,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -51,9 +53,8 @@ import org.gradle.api.tasks.TaskAction;
 import net.fabricmc.loom.LoomGradlePlugin;
 import net.fabricmc.loom.configuration.ide.RunConfig;
 import net.fabricmc.loom.configuration.ide.RunConfigSettings;
+import net.fabricmc.loom.util.Constants;
 import net.fabricmc.loom.util.gradle.SyncTaskBuildService;
-
-import javax.inject.Inject;
 
 // Recommended vscode plugin pack:
 // https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack
@@ -70,10 +71,9 @@ public abstract class GenVsCodeProjectTask extends AbstractLoomTask {
 
 	@Inject
 	public GenVsCodeProjectTask() {
+		setGroup(Constants.TaskGroup.IDE);
 		getLaunchConfigurations().set(getProject().provider(this::getConfigurations));
 		getLaunchJson().convention(getProject().getRootProject().getLayout().getProjectDirectory().file("vscode/launch.json"));
-
-		notCompatibleWithConfigurationCache("Not supported yet.");
 	}
 
 	private List<VsCodeConfiguration> getConfigurations() {
