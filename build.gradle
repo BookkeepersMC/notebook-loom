@@ -52,7 +52,13 @@ group = 'com.bookkeepersmc'
 def baseVersion = '1.1'
 
 def ENV = System.getenv()
-version = baseVersion + '.' + project.minorVersion
+if (ENV.BUILD_NUMBER) {
+	if (ENV.EXPERIMENTAL) {
+		version = baseVersion + '.0-alpha.' + ENV.BUILD_NUMBER
+	} else {
+		version = baseVersion + '.' + ENV.BUILD_NUMBER
+	}
+}
 
 // We must build against the version of Kotlin Gradle ships with.
 def props = new Properties()
@@ -348,7 +354,7 @@ publishing {
 	}
 	repositories {
 		maven {
-			url "file://C:/Repositories/m2/"
+			url "file://${rootProject.rootDir}/m2/"
 		}
 	}
 }

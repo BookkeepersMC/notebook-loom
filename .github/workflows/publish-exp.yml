@@ -1,8 +1,6 @@
 name: Publish
 on:
-  push:
-    branches:
-      - 'exp/**'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -14,6 +12,12 @@ jobs:
           java-version: 21
           distribution: 'temurin'
       - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: "Bookkeepersmc/m2"
+          ref: master
+          path: "./m2/"
+          token: ${{ secrets.GIT_PAT }}
       - uses: gradle/wrapper-validation-action@v2
 
       # Generate the build number based on tags to allow per branch build numbers, not something github provides by default.
@@ -30,3 +34,10 @@ jobs:
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
           EXPERIMENTAL: true
+
+      - uses: EndBug/add-and-commit@v9.1.4
+        with:
+          add: "./com/"
+          default_author: github_actions
+          pwd: "./m2/"
+          message: "Publish loom (alpha)"

@@ -6,6 +6,7 @@
 !/gradle
 !/src
 !/.github
+!/m2
 
 # Files
 !/.gitattributes
