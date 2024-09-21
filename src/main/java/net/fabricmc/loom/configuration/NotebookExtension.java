@@ -245,7 +245,7 @@ public abstract class NotebookExtension {
 		try {
 			return populateModuleVersionMap(getApiMavenPom(fabricApiVersion));
 		} catch (PomNotFoundException e) {
-			throw new RuntimeException("Could not find fabric-api version: " + fabricApiVersion);
+			throw new RuntimeException("Could not find notebook version: " + fabricApiVersion);
 		}
 	}
 
