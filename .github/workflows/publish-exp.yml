@@ -39,5 +39,5 @@ jobs:
         with:
           add: "./com/"
           default_author: github_actions
-          pwd: "./m2/"
+          cwd: "./m2/"
           message: "Publish loom (alpha)"
