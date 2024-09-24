@@ -61,7 +61,7 @@ public final class IntermediateMappingsService extends Service<IntermediateMappi
 
 	public interface Options extends Service.Options {
 		@InputFile
-		RegularFileProperty getIntermediateTiny();
+		RegularFileProperty getIntermediaryTiny();
 
 		@Input
 		Property<String> getExpectedSrcNs();
@@ -101,7 +101,7 @@ public final class IntermediateMappingsService extends Service<IntermediateMappi
 		return createOptions(project, minecraftProvider, intermediaryTiny);
 	}
 
-	public static Provider<Options> createOptions(Project project, MinecraftProvider minecraftProvider, Path intermediaryTiny) {
+	private static Provider<Options> createOptions(Project project, MinecraftProvider minecraftProvider, Path intermediaryTiny) {
 		final LoomGradleExtension extension = LoomGradleExtension.get(project);
 		final IntermediateMappingsProvider intermediateProvider = extension.getIntermediateMappingsProvider();
 		// When merging legacy versions there will be multiple named namespaces, so use intermediary as the common src ns
@@ -111,7 +111,7 @@ public final class IntermediateMappingsService extends Service<IntermediateMappi
 				: MappingsNamespace.OFFICIAL.toString(); // >=1.3
 
 		return TYPE.create(project, options -> {
-			options.getIntermediateTiny().set(intermediaryTiny.toFile());
+			options.getIntermediaryTiny().set(intermediaryTiny.toFile());
 			options.getExpectedSrcNs().set(expectedSrcNs);
 			options.getMinecraftVersion().set(intermediateProvider.getMinecraftVersion());
 		});
@@ -122,7 +122,7 @@ public final class IntermediateMappingsService extends Service<IntermediateMappi
 	}
 
 	@VisibleForTesting
-	private MemoryMappingTree createMemoryMappingTree(Path mappingFile, String expectedSrcNs) {
+	public static MemoryMappingTree createMemoryMappingTree(Path mappingFile, String expectedSrcNs) {
 		final MemoryMappingTree tree = new MemoryMappingTree();
 
 		try {
@@ -147,6 +147,6 @@ public final class IntermediateMappingsService extends Service<IntermediateMappi
 	}
 
 	public Path getIntermediaryTiny() {
-		return getOptions().getIntermediateTiny().get().getAsFile().toPath();
+		return getOptions().getIntermediaryTiny().get().getAsFile().toPath();
 	}
 }

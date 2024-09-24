@@ -22,29 +22,24 @@
  * SOFTWARE.
  */
 
-package net.fabricmc.loom.configuration.providers.mappings.intermediary;
+package com.bookkeepersmc.loom.test.unit.layered
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.function.Supplier;
+import net.fabricmc.loom.configuration.providers.mappings.intermediary.IntermediaryMappingsSpec
 
-import net.fabricmc.loom.api.mappings.layered.MappingLayer;
-import net.fabricmc.loom.api.mappings.layered.MappingsNamespace;
-import net.fabricmc.mappingio.MappingVisitor;
-import net.fabricmc.mappingio.adapter.MappingNsCompleter;
-import net.fabricmc.mappingio.tree.MemoryMappingTree;
-
-public record IntermediaryMappingLayer(Supplier<MemoryMappingTree> memoryMappingTree) implements MappingLayer {
-	@Override
-	public MappingsNamespace getSourceNamespace() {
-		return MappingsNamespace.OFFICIAL;
-	}
-
-	@Override
-	public void visit(MappingVisitor mappingVisitor) throws IOException {
-		// Populate named with intermediary and add a "named" namespace
-		MappingNsCompleter nsCompleter = new MappingNsCompleter(mappingVisitor, Collections.singletonMap(MappingsNamespace.NAMED.toString(), MappingsNamespace.INTERMEDIARY.toString()), true);
-
-		memoryMappingTree.get().accept(nsCompleter);
+class IntermediaryMappingLayerTest extends LayeredMappingsSpecification {
+	def "Read intermediary mappings" () {
+		setup:
+		intermediaryUrl = INTERMEDIARY_1_17_URL
+		mockMinecraftProvider.getVersionInfo() >> VERSION_META_1_17
+		mockMinecraftProvider.minecraftVersion() >> "1.17"
+		when:
+		def mappings = getSingleMapping(new IntermediaryMappingsSpec())
+		def tiny = getTiny(mappings)
+		then:
+		mappings.srcNamespace == "official"
+		mappings.dstNamespaces == ["intermediary", "named"]
+		mappings.classes.size() == 6107
+		mappings.getClass("abc").getDstName(0) == "net/minecraft/class_3191"
+		mappings.getClass("abc").getDstName(1) == "net/minecraft/class_3191"
 	}
 }

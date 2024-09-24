@@ -1,7 +1,7 @@
 /*
  * This file is part of fabric-loom, licensed under the MIT License (MIT).
  *
- * Copyright (c) 2016-2021 FabricMC
+ * Copyright (c) 2022 FabricMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,29 +22,29 @@
  * SOFTWARE.
  */
 
-package net.fabricmc.loom.configuration.providers.mappings.intermediary;
+package com.bookkeepersmc.loom.test.unit.layered
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.function.Supplier;
+import net.fabricmc.loom.api.mappings.layered.spec.FileSpec
+import net.fabricmc.loom.configuration.providers.mappings.file.FileMappingsSpecBuilderImpl
+import net.fabricmc.loom.configuration.providers.mappings.intermediary.IntermediaryMappingsSpec
 
-import net.fabricmc.loom.api.mappings.layered.MappingLayer;
-import net.fabricmc.loom.api.mappings.layered.MappingsNamespace;
-import net.fabricmc.mappingio.MappingVisitor;
-import net.fabricmc.mappingio.adapter.MappingNsCompleter;
-import net.fabricmc.mappingio.tree.MemoryMappingTree;
+class UnpickLayerTest extends LayeredMappingsSpecification {
+	def "read unpick data from yarn"() {
+		setup:
+		intermediaryUrl = INTERMEDIARY_1_17_URL
+		mockMinecraftProvider.getVersionInfo() >> VERSION_META_1_17
+		when:
+		def builder = FileMappingsSpecBuilderImpl.builder(FileSpec.create(YARN_1_17_URL)).containsUnpick()
+		def unpickData = getUnpickData(
+				new IntermediaryMappingsSpec(),
+				builder.build()
+				)
+		def metadata = unpickData.metadata()
+		then:
+		metadata.version() == 1
+		metadata.unpickGroup() == "net.fabricmc.unpick"
+		metadata.unpickVersion() == "2.2.0"
 
-public record IntermediaryMappingLayer(Supplier<MemoryMappingTree> memoryMappingTree) implements MappingLayer {
-	@Override
-	public MappingsNamespace getSourceNamespace() {
-		return MappingsNamespace.OFFICIAL;
-	}
-
-	@Override
-	public void visit(MappingVisitor mappingVisitor) throws IOException {
-		// Populate named with intermediary and add a "named" namespace
-		MappingNsCompleter nsCompleter = new MappingNsCompleter(mappingVisitor, Collections.singletonMap(MappingsNamespace.NAMED.toString(), MappingsNamespace.INTERMEDIARY.toString()), true);
-
-		memoryMappingTree.get().accept(nsCompleter);
+		unpickData.definitions().length == 56119
 	}
 }
