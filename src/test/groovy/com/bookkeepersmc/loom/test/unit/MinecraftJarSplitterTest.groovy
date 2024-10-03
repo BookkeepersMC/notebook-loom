@@ -26,9 +26,9 @@ package com.bookkeepersmc.loom.test.unit
 
 import com.bookkeepersmc.loom.test.LoomTestConstants
 import com.bookkeepersmc.loom.test.util.GradleTestUtil
-import net.fabricmc.loom.configuration.providers.BundleMetadata
 import spock.lang.Specification
 
+import net.fabricmc.loom.configuration.providers.BundleMetadata
 import net.fabricmc.loom.configuration.providers.minecraft.MinecraftJarSplitter
 import net.fabricmc.loom.util.download.Download
 
