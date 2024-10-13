@@ -37,7 +37,7 @@ jobs:
 
       - uses: EndBug/add-and-commit@v9.1.4
         with:
-          add: "./com/"
+          add: '["./com/", "./notebook-loom/"]'
           default_author: github_actions
           cwd: "./m2/"
           message: "Publish loom (alpha)"
