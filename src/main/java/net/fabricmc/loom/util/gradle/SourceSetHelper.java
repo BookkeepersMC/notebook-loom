@@ -41,7 +41,6 @@ import javax.xml.xpath.XPathFactory;
 
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
@@ -54,7 +53,6 @@ import org.xml.sax.InputSource;
 import net.fabricmc.loom.LoomGradleExtension;
 import net.fabricmc.loom.api.ModSettings;
 import net.fabricmc.loom.configuration.ide.idea.IdeaUtils;
-import net.fabricmc.loom.util.Constants;
 
 public final class SourceSetHelper {
 	@VisibleForTesting
@@ -125,7 +123,7 @@ public final class SourceSetHelper {
 	}
 
 	public static List<File> getClasspath(SourceSetReference reference, Project project) {
-		final List<File> classpath = getGradleClasspath(reference, project);
+		final List<File> classpath = getGradleClasspath(reference);
 
 		classpath.addAll(getIdeaClasspath(reference, project));
 		classpath.addAll(getEclipseClasspath(reference, project));
@@ -134,7 +132,7 @@ public final class SourceSetHelper {
 		return classpath;
 	}
 
-	private static List<File> getGradleClasspath(SourceSetReference reference, Project project) {
+	private static List<File> getGradleClasspath(SourceSetReference reference) {
 		final SourceSetOutput output = reference.sourceSet().getOutput();
 		final File resources = output.getResourcesDir();
 
@@ -144,15 +142,6 @@ public final class SourceSetHelper {
 
 		if (resources != null) {
 			classpath.add(resources);
-		}
-
-		if (SourceSet.MAIN_SOURCE_SET_NAME.equals(reference.sourceSet().getName()) && !reference.project().getPath().equals(project.getPath())
-						&& GradleUtils.isLoomProject(reference.project())) {
-			final Configuration namedElements = reference.project().getConfigurations().getByName(Constants.Configurations.NAMED_ELEMENTS);
-
-			for (File artifact : namedElements.getOutgoing().getArtifacts().getFiles()) {
-				classpath.add(artifact);
-			}
 		}
 
 		return classpath;
