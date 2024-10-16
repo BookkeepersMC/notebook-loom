@@ -299,7 +299,7 @@ public abstract class NotebookExtension {
 		final var mavenPom = new File(extension.getFiles().getUserCache(), "notebook-api/%s-%s.pom".formatted(name, version));
 
 		try {
-			extension.download(String.format("https://bookkeepersmc.github.io/m2/com/bookkeepersmc/notebook-api/%2$s/%1$s/%2$s-%1$s.pom", version, name))
+			extension.download(String.format("https://maven.bookkeepersmc.com/com/bookkeepersmc/notebook-api/%2$s/%1$s/%2$s-%1$s.pom", version, name))
 					.defaultCache()
 					.downloadPath(mavenPom.toPath());
 		} catch (DownloadException e) {

@@ -77,7 +77,7 @@ repositories {
 	}
 	maven {
 		// Mercury Mixin.
-		url = "https://bookkeepersmc.github.io/m2/"
+		url = "https://maven.bookkeepersmc.com/"
 	}
 	mavenCentral()
 }
@@ -354,7 +354,11 @@ publishing {
 	}
 	repositories {
 		maven {
-			url "file://${rootProject.rootDir}/m2/"
+			url ENV.MAVEN_URL
+			credentials {
+				username = ENV.MAVEN_USERNAME
+				password = ENV.MAVEN_PASSWORD
+			}
 		}
 	}
 }
